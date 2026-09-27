@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinierLab — Media Pembelajaran SPLDV &amp; SPLTV Interaktif</title>
+<style>
+/* ============ RESET & ROOT ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#070b16;
+  --bg2:#0b1224;
+  --card:rgba(148,163,184,.06);
+  --card2:rgba(148,163,184,.10);
+  --border:rgba(148,163,184,.16);
+  --border2:rgba(148,163,184,.28);
+  --text:#e8eef9;
+  --muted:#95a3be;
+  --cyan:#22d3ee;
+  --violet:#8b7cf6;
+  --pink:#f472b6;
+  --gold:#fbbf24;
+  --green:#34d399;
+  --red:#fb7185;
+  --radius:18px;
+  --nav-h:64px;
+  --font:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgba(139,124,246,.16), transparent 60%),
+    radial-gradient(800px 500px at -10% 20%, rgba(34,211,238,.12), transparent 60%),
+    radial-gradient(700px 600px at 60% 110%, rgba(244,114,182,.10), transparent 60%),
+    var(--bg);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(148,163,184,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,.05) 1px, transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+}
+::selection{background:rgba(139,124,246,.4)}
+h1,h2,h3,h4{line-height:1.2;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+section{scroll-margin-top:calc(var(--nav-h) + 12px)}
+.math{font-family:"Consolas","Cascadia Code","SF Mono",monospace;letter-spacing:0}
+.grad{background:linear-gradient(92deg,var(--cyan),var(--violet) 60%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.muted{color:var(--muted)}
+
+/* ============ ICON ============ */
+.ic{width:22px;height:22px;flex:none}
+.ifill{fill:currentColor;stroke:none}
+
+/* ============ NAV ============ */
+.topnav{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:0 clamp(16px,4vw,44px);
+  background:rgba(7,11,22,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;letter-spacing:-.01em}
+.brand b{color:var(--cyan)}
+.brand .logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(34,211,238,.25),rgba(139,124,246,.25));
+  border:1px solid var(--border2)}
+.brand .logo svg{width:22px;height:22px}
+.nav-links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  padding:8px 14px;border-radius:999px;font-size:.9rem;color:var(--muted);
+  white-space:nowrap;transition:.2s;border:1px solid transparent;font-weight:600;
+}
+.nav-link:hover{color:var(--text);background:rgba(148,163,184,.08)}
+.nav-link.active{color:var(--text)}
+.nav-link.active::after{content:"";display:block;height:2px;border-radius:2px;margin-top:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.nav-cta{color:#221a03;background:linear-gradient(92deg,#fde68a,var(--gold));font-weight:800}
+.nav-cta:hover{color:#221a03;filter:brightness(1.08)}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:14px;
+  font-weight:800;font-size:.95rem;border:1px solid transparent;color:#06222b;
+  background:linear-gradient(92deg,var(--cyan),#67e8f9);box-shadow:0 8px 26px rgba(34,211,238,.25);
+  transition:.2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(34,211,238,.35)}
+.btn .ic{width:18px;height:18px}
+.btn-violet{background:linear-gradient(92deg,var(--violet),#a78bfa);color:#17103a;box-shadow:0 8px 26px rgba(139,124,246,.25)}
+.btn-violet:hover{box-shadow:0 14px 34px rgba(139,124,246,.35)}
+.btn-gold{background:linear-gradient(92deg,#fde68a,var(--gold));color:#221a03;box-shadow:0 8px 26px rgba(251,191,36,.25)}
+.btn-gold:hover{box-shadow:0 14px 34px rgba(251,191,36,.4)}
+.btn-ghost{background:rgba(148,163,184,.08);color:var(--text);border:1px solid var(--border2);box-shadow:none}
+.btn-ghost:hover{background:rgba(148,163,184,.15);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sm{padding:9px 16px;font-size:.85rem;border-radius:11px}
+
+/* ============ LAYOUT ============ */
+.section{padding:96px 20px 72px;max-width:1180px;margin:0 auto;position:relative}
+.sec-head{max-width:720px;margin-bottom:44px}
+.sec-head .kicker{
+  display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;
+}
+.sec-head .kicker::before{content:"";width:26px;height:2px;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:2px}
+.sec-head h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;margin-bottom:12px}
+.sec-head p{color:var(--muted)}
+.sec-num{
+  position:absolute;top:70px;right:20px;font-size:clamp(3.4rem,8vw,6rem);font-weight:900;
+  color:transparent;-webkit-text-stroke:1px rgba(148,163,184,.16);line-height:1;user-select:none;pointer-events:none;
+}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:26px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.card-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.card-h .icbox{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.card-h h3{font-size:1.08rem;font-weight:800}
+.icbox.c-cyan{background:rgba(34,211,238,.14);color:var(--cyan)}
+.icbox.c-violet{background:rgba(139,124,246,.16);color:#b7a9ff}
+.icbox.c-pink{background:rgba(244,114,182,.14);color:var(--pink)}
+.icbox.c-gold{background:rgba(251,191,36,.14);color:var(--gold)}
+.icbox.c-green{background:rgba(52,211,153,.14);color:var(--green)}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:calc(var(--nav-h) + 50px) 20px 70px;overflow:hidden}
+.hero-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;width:100%}
+.pill{
+  display:inline-flex;align-items:center;gap:9px;padding:7px 16px;border-radius:999px;
+  border:1px solid var(--border2);background:rgba(148,163,184,.08);
+  font-size:.8rem;font-weight:700;color:var(--cyan);letters-spacing:.04em;margin-bottom:22px;
+}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.hero h1{font-size:clamp(2.3rem,5.4vw,4rem);font-weight:900;margin-bottom:20px;letter-spacing:-.03em}
+.hero .lead{color:var(--muted);font-size:1.05rem;max-width:560px;margin-bottom:30px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:38px}
+.hero-stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat-chip{
+  padding:12px 18px;border-radius:14px;border:1px solid var(--border);background:var(--card);
+  min-width:118px;
+}
+.stat-chip b{display:block;font-size:1.35rem;background:linear-gradient(92deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-chip span{font-size:.78rem;color:var(--muted);font-weight:600}
+.fsym{
+  position:absolute;font-weight:900;color:rgba(148,163,184,.10);user-select:none;pointer-events:none;
+  animation:floaty 9s ease-in-out infinite;font-family:var(--font);
+}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-22px) rotate(5deg)}}
+
+.hero-art{position:relative}
+.graphcard{
+  background:linear-gradient(160deg,rgba(20,28,52,.9),rgba(11,17,36,.9));
+  border:1px solid var(--border2);border-radius:24px;padding:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(139,124,246,.08);
+  transform:rotate(2deg);transition:transform .4s;
+}
+.graphcard:hover{transform:rotate(0)}
+.graphcard svg{display:block;width:100%;height:auto;border-radius:14px;background:#0a1020}
+.eq-badge{
+  position:absolute;padding:10px 16px;border-radius:13px;font-size:.92rem;font-weight:700;
+  background:rgba(13,20,40,.92);border:1px solid var(--border2);backdrop-filter:blur(8px);
+  box-shadow:0 14px 34px rgba(0,0,0,.45);animation:floaty 7s ease-in-out infinite;
+}
+.eq-badge.b1{top:-18px;right:8px;color:var(--cyan);border-left:3px solid var(--cyan)}
+.eq-badge.b2{bottom:56px;left:-24px;color:var(--pink);border-left:3px solid var(--pink);animation-delay:1.4s}
+.eq-badge.b3{bottom:-16px;right:24px;color:var(--gold);border-left:3px solid var(--gold);animation-delay:.7s}
+
+/* ============ TABS ============ */
+.tabs{display:inline-flex;gap:6px;padding:6px;border-radius:16px;background:rgba(148,163,184,.07);border:1px solid var(--border);margin-bottom:30px;flex-wrap:wrap}
+.tab-btn{
+  padding:10px 22px;border-radius:11px;border:none;background:transparent;color:var(--muted);
+  font-weight:800;font-size:.92rem;transition:.2s;display:inline-flex;align-items:center;gap:9px;
+}
+.tab-btn .ic{width:17px;height:17px}
+.tab-btn.active{background:linear-gradient(92deg,rgba(34,211,238,.2),rgba(139,124,246,.22));color:var(--text);box-shadow:inset 0 0 0 1px rgba(139,124,246,.4)}
+.tab-panel{display:none;animation:fadeUp .45s ease both}
+.tab-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ============ MATERI ============ */
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.mini-svg{width:100%;height:auto;border-radius:12px;background:#0a1020;border:1px solid var(--border);display:block;margin-bottom:14px}
+.def-card{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;margin-bottom:18px}
+.formula-box{
+  background:#0a1020;border:1px solid var(--border2);border-radius:14px;padding:22px 26px;
+  font-size:1.15rem;text-align:center;position:relative;overflow:hidden;
+}
+.formula-box::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink))}
+.formula-box .math{display:block;font-size:1.25rem;margin:4px 0}
+.formula-box small{color:var(--muted);font-size:.8rem}
+.tag{display:inline-block;padding:3px 11px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.tag.cyan{background:rgba(34,211,238,.13);color:var(--cyan)}
+.tag.violet{background:rgba(139,124,246,.15);color:#b7a9ff}
+.tag.pink{background:rgba(244,114,182,.13);color:var(--pink)}
+.tag.gold{background:rgba(251,191,36,.13);color:var(--gold)}
+.tag.green{background:rgba(52,211,153,.13);color:var(--green)}
+.tag.red{background:rgba(251,113,133,.13);color:var(--red)}
+.method-num{
+  width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:.95rem;
+  background:linear-gradient(135deg,rgba(34,211,238,.25),rgba(139,124,246,.25));border:1px solid var(--border2);color:var(--cyan);flex:none;
+}
+.step-flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+.step-flow .sf{flex:1;min-width:150px;padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--card);position:relative}
+.step-flow .sf b{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.step-flow .arr{color:var(--muted);font-size:1.3rem;flex:none}
+ul.checklist{list-style:none;display:grid;gap:9px;margin-top:8px}
+ul.checklist li{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:.93rem}
+ul.checklist li svg{width:17px;height:17px;color:var(--green);flex:none;margin-top:3px}
+
+/* ============ SIMULASI ============ */
+.sim-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start}
+.canvas-wrap{position:relative;background:#0a1020;border:1px solid var(--border2);border-radius:16px;overflow:hidden}
+.canvas-wrap canvas{display:block;width:100%;height:auto}
+.canvas-legend{position:absolute;top:12px;left:12px;display:flex;gap:8px;flex-wrap:wrap}
+.leg{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:999px;font-size:.74rem;font-weight:800;background:rgba(10,16,32,.85);border:1px solid var(--border2)}
+.leg i{width:14px;height:4px;border-radius:2px;display:inline-block}
+.l1c{background:var(--cyan)} .l2c{background:var(--pink)}
+.slider-row{display:grid;grid-template-columns:52px 1fr 62px;align-items:center;gap:12px;padding:7px 0}
+.slider-row .slabel{font-weight:800;font-size:.95rem;text-align:center;padding:4px 0;border-radius:8px;background:rgba(148,163,184,.09)}
+.slider-row input[type=range]{width:100%;accent-color:var(--violet);height:26px}
+.slider-row input[type=number]{
+  width:100%;padding:7px 6px;border-radius:9px;border:1px solid var(--border2);background:#0a1020;color:var(--text);
+  text-align:center;font-weight:700;font-size:.9rem;font-family:inherit;
+}
+.sim-hr{height:1px;background:var(--border);margin:12px 0}
+.readout{margin-top:20px}
+.status-badge{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;font-weight:800;font-size:.9rem;border:1px solid}
+.status-badge.ok{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.status-badge.warn{color:var(--gold);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.08)}
+.status-badge.none{color:var(--red);border-color:rgba(251,113,133,.4);background:rgba(251,113,133,.08)}
+.status-badge .ic{width:17px;height:17px}
+
+.math-block{
+  background:#0a1020;border:1px solid var(--border);border-radius:13px;padding:16px 18px;margin:10px 0;
+  font-family:"Consolas","Cascadia Code","SF Mono",monospace;font-size:.95rem;line-height:2;overflow-x:auto;
+}
+.eq-line{display:flex;gap:12px;align-items:baseline;white-space:nowrap}
+.eq-tag{display:inline-block;min-width:34px;text-align:center;padding:0 8px;border-radius:7px;background:rgba(139,124,246,.15);color:#b7a9ff;font-size:.78rem;font-weight:800;font-family:var(--font)}
+.hl{color:var(--gold);font-weight:800}
+.hlc{color:var(--cyan);font-weight:800}
+.hlp{color:var(--pink);font-weight:800}
+
+.coef-grid{display:grid;gap:14px}
+.coef-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.coef-row input{
+  width:56px;padding:9px 4px;border-radius:10px;border:1px solid var(--border2);background:#0a1020;color:var(--text);
+  text-align:center;font-weight:800;font-size:1rem;font-family:inherit;transition:.15s;
+}
+.coef-row input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,124,246,.2)}
+.coef-row .vn{font-weight:800;color:var(--cyan);width:16px}
+.coef-row .op{color:var(--muted);font-weight:700;width:12px;text-align:center}
+.coef-row .eql{color:var(--muted);font-weight:800}
+.coef-out{min-width:44px;text-align:center;font-weight:900;color:var(--gold)}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.steps-stack{display:grid;gap:12px;margin-top:18px}
+.step-card{
+  border:1px solid var(--border);border-left:3px solid var(--violet);border-radius:12px;padding:14px 18px;
+  background:rgba(139,124,246,.05);animation:fadeUp .4s ease both;
+}
+.step-card h4{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:#b7a9ff;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.step-card.fin{border-left-color:var(--green);background:rgba(52,211,153,.06)}
+.step-card.fin h4{color:var(--green)}
+.step-card.bad{border-left-color:var(--red);background:rgba(251,113,133,.06)}
+.step-card.bad h4{color:var(--red)}
+
+/* ============ CONTOH ============ */
+.ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ex-card .problem{
+  background:#0a1020;border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:.95rem;
+}
+.ex-steps{display:grid;gap:9px;margin-bottom:14px}
+.ex-step{
+  display:none;gap:12px;padding:11px 15px;border-radius:11px;background:rgba(148,163,184,.06);
+  border:1px solid var(--border);animation:fadeUp .35s ease both;font-size:.93rem;
+}
+.ex-step.show{display:flex}
+.ex-step .n{width:26px;height:26px;flex:none;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:.8rem;background:rgba(52,211,153,.15);color:var(--green)}
+.ex-step .concl{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08);font-weight:700}
+
+/* ============ KUIS ============ */
+.quiz-shell{max-width:760px;margin:0 auto}
+.q-progress{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.q-progress .bar{flex:1;height:9px;border-radius:999px;background:rgba(148,163,184,.12);overflow:hidden}
+.q-progress .bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--violet));transition:width .4s}
+.q-progress .lbl{font-size:.83rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.q-card{position:relative;overflow:hidden}
+.q-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--pink),var(--violet))}
+.q-text{font-size:1.12rem;font-weight:700;margin:16px 0 22px;line-height:1.7}
+.q-opts{display:grid;gap:11px}
+.q-opt{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:15px 18px;border-radius:13px;
+  border:1.5px solid var(--border2);background:rgba(148,163,184,.05);color:var(--text);
+  font-size:1rem;font-weight:600;transition:.18s;font-family:inherit;
+}
+.q-opt .abc{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:.85rem;background:rgba(148,163,184,.12);transition:.18s}
+.q-opt:hover:not(:disabled){border-color:var(--violet);background:rgba(139,124,246,.09);transform:translateX(4px)}
+.q-opt:disabled{cursor:default;opacity:.75}
+.q-opt.correct{border-color:var(--green);background:rgba(52,211,153,.12);opacity:1}
+.q-opt.correct .abc{background:var(--green);color:#04120c}
+.q-opt.wrong{border-color:var(--red);background:rgba(251,113,133,.12);opacity:1}
+.q-opt.wrong .abc{background:var(--red);color:#1c0508}
+.q-explain{
+  display:none;margin-top:20px;padding:16px 20px;border-radius:13px;border:1px solid rgba(251,191,36,.35);
+  background:rgba(251,191,36,.06);animation:fadeUp .4s ease both;
+}
+.q-explain.show{display:block}
+.q-explain h4{color:var(--gold);font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.score-ring{position:relative;width:170px;height:170px;margin:10px auto}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .num{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.score-ring .num b{font-size:2.3rem;font-weight:900;display:block;line-height:1}
+.score-ring .num span{font-size:.8rem;color:var(--muted);font-weight:700}
+.review-item{border:1px solid var(--border);border-radius:12px;padding:13px 17px;background:rgba(148,163,184,.04);margin-top:10px;font-size:.9rem}
+.review-item .rk{display:flex;gap:8px;align-items:center;font-weight:700;margin-top:6px}
+.review-item .rk svg{width:16px;height:16px}
+
+/* ============ TURNAMEN ============ */
+.t-home-hero{
+  text-align:center;padding:52px 24px 40px;border-radius:24px;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,rgba(251,191,36,.10),rgba(11,17,36,.6) 55%);border:1px solid rgba(251,191,36,.3);
+}
+.t-home-hero .trophy{width:92px;height:92px;margin:0 auto 18px;color:var(--gold);filter:drop-shadow(0 10px 26px rgba(251,191,36,.4));animation:floaty 6s ease-in-out infinite}
+.t-rules{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}
+.t-rule{padding:18px;border-radius:15px;border:1px solid var(--border);background:var(--card);text-align:center}
+.t-rule .ic{width:26px;height:26px;color:var(--gold);margin-bottom:8px}
+.t-rule b{display:block;font-size:1.02rem;margin-bottom:3px}
+.t-rule span{font-size:.8rem;color:var(--muted)}
+.name-join{display:flex;gap:10px;max-width:460px;margin:0 auto}
+.name-join input{
+  flex:1;padding:13px 18px;border-radius:13px;border:1px solid var(--border2);background:rgba(10,16,32,.85);
+  color:var(--text);font-family:inherit;font-weight:700;font-size:.98rem;
+}
+.name-join input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+.lb-list{display:grid;gap:8px;margin-top:14px}
+.lb-row{display:flex;align-items:center;gap:13px;padding:11px 16px;border-radius:12px;border:1px solid var(--border);background:rgba(148,163,184,.04)}
+.lb-row .rank{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:.85rem;background:rgba(148,163,184,.12);color:var(--muted)}
+.lb-row:nth-child(1) .rank{background:linear-gradient(135deg,#fde68a,var(--gold));color:#221a03}
+.lb-row:nth-child(2) .rank{background:linear-gradient(135deg,#e2e8f0,#94a3b8);color:#1e293b}
+.lb-row:nth-child(3) .rank{background:linear-gradient(135deg,#fdba74,#c2703f);color:#2c1203}
+.lb-row .nm{flex:1;font-weight:700;text-align:left}
+.lb-row .pts{font-weight:900;color:var(--gold)}
+
+.bracket{display:grid;grid-template-columns:1.1fr 1fr .9fr .8fr;gap:22px;align-items:stretch;margin-top:8px}
+.br-col{display:flex;flex-direction:column;justify-content:space-around;gap:14px}
+.br-col h5{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:center;margin-bottom:2px}
+.match-box{border:1px solid var(--border);border-radius:13px;overflow:hidden;background:rgba(10,16,32,.6)}
+.match-box.current{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 12px 34px rgba(251,191,36,.16)}
+.mb-row{display:flex;align-items:center;gap:9px;padding:9px 13px;font-size:.87rem;font-weight:700}
+.mb-row+.mb-row{border-top:1px solid var(--border)}
+.mb-row .init{width:25px;height:25px;border-radius:8px;display:grid;place-items:center;font-size:.68rem;font-weight:900;flex:none;color:#0a1020}
+.mb-row .mn{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-row .ms{font-weight:900;color:var(--muted)}
+.mb-row.winner .ms{color:var(--gold)}
+.mb-row.loser{opacity:.45}
+.mb-row.human .mn{color:var(--cyan)}
+.champ-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:22px;border-radius:16px;border:1px dashed var(--border2);text-align:center}
+.champ-box .ic{width:40px;height:40px;color:var(--gold)}
+.champ-box b{font-size:.95rem}
+
+.match-shell{position:relative}
+.sb{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:22px}
+.pchip{display:flex;align-items:center;gap:12px;padding:13px 17px;border-radius:15px;border:1px solid var(--border2);background:rgba(10,16,32,.7)}
+.pchip.right{justify-content:flex-end;text-align:right}
+.pchip .init{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:900;font-size:1rem;color:#0a1020;flex:none}
+.pchip .pn{font-weight:800;font-size:.95rem}
+.pchip .ps{font-size:1.35rem;font-weight:900;color:var(--gold);line-height:1.1}
+.pchip .st{font-size:.7rem;color:var(--muted);font-weight:700}
+.think{display:inline-flex;gap:3px;align-items:center}
+.think i{width:4px;height:4px;border-radius:50%;background:var(--muted);display:inline-block;animation:blink 1s infinite}
+.think i:nth-child(2){animation-delay:.2s}.think i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.mid-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+.mid-col .rd{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800}
+.mid-col .qc{font-size:.8rem;font-weight:800}
+.ring{position:relative;width:74px;height:74px}
+.ring svg{width:74px;height:74px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:6;stroke-linecap:round}
+.ring .rbg{stroke:rgba(148,163,184,.15)}
+.ring .rfg{stroke:var(--gold);stroke-dasharray:195.6;stroke-dashoffset:0;transition:stroke-dashoffset .1s linear, stroke .3s}
+.ring .rt{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:1.15rem}
+.qnote{min-height:26px;font-weight:800;font-size:.95rem;margin-top:14px;text-align:center}
+.qnote.ok{color:var(--green)} .qnote.bad{color:var(--red)}
+.overlay{
+  position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
+  background:rgba(7,11,22,.86);backdrop-filter:blur(8px);border-radius:var(--radius);text-align:center;padding:20px;
+}
+.overlay.show{display:flex;animation:fadeUp .35s ease both}
+.overlay .obox{max-width:420px}
+.overlay .big-ic{width:78px;height:78px;margin:0 auto 14px}
+.overlay h3{font-size:1.6rem;margin-bottom:8px}
+.overlay p{color:var(--muted);margin-bottom:20px}
+.big-score{display:flex;justify-content:center;gap:16px;align-items:center;margin-bottom:20px;font-weight:900;font-size:2rem}
+.big-score .vs{color:var(--muted);font-size:1rem}
+
+/* ============ CONFETTI ============ */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.cfp{position:absolute;top:-14px;width:9px;height:15px;border-radius:2px;animation:cfall linear forwards}
+@keyframes cfall{to{transform:translateY(108vh) rotate(720deg);opacity:.7}}
+
+/* ============ REVEAL ============ */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--border);padding:34px 20px;text-align:center;color:var(--muted);font-size:.85rem}
+footer .brand{justify-content:center;margin-bottom:8px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:980px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .hero-art{max-width:520px;margin:0 auto;width:100%}
+  .sim-grid{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .def-card{grid-template-columns:1fr}
+  .bracket{grid-template-columns:1fr 1fr}
+  .t-rules{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .g3,.g2,.g4,.ex-grid{grid-template-columns:1fr}
+  .sec-num{display:none}
+  .sb{grid-template-columns:1fr;gap:10px}
+  .pchip.right{justify-content:flex-start;text-align:left}
+  .bracket{grid-template-columns:1fr}
+  .name-join{flex-direction:column}
+  .topnav{padding:0 12px}
+  .brand span{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="confetti"></div>
+
+<!-- ================= NAV ================= -->
+<nav class="topnav">
+  <a class="brand" href="#beranda">
+    <span class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round">
+        <path d="M3 21h18M3 21V3" stroke="#95a3be"/>
+        <path d="M4 17L20 6" stroke="#22d3ee"/>
+        <path d="M6 5l13 14" stroke="#f472b6"/>
+        <circle cx="11.2" cy="12.4" r="2.1" fill="#fbbf24" stroke="none"/>
+      </svg>
+    </span>
+    <span>Linier<b>Lab</b></span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#materi">Materi</a>
+    <a class="nav-link" href="#simulasi">Simulasi</a>
+    <a class="nav-link" href="#contoh">Contoh Soal</a>
+    <a class="nav-link" href="#kuis">Kuis</a>
+    <a class="nav-link nav-cta" href="#turnamen">Turnamen</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="beranda">
+  <span class="fsym" style="top:14%;left:6%;font-size:5rem">x</span>
+  <span class="fsym" style="top:64%;left:3%;font-size:3.6rem;animation-delay:1.3s">y</span>
+  <span class="fsym" style="top:22%;right:5%;font-size:4rem;animation-delay:.6s">z</span>
+  <span class="fsym" style="bottom:10%;left:42%;font-size:3.4rem;animation-delay:1.9s">&Sigma;</span>
+  <span class="fsym" style="top:74%;right:10%;font-size:4.4rem;animation-delay:2.6s">&infin;</span>
+  <span class="fsym" style="top:8%;left:48%;font-size:3rem;animation-delay:3.2s">&radic;</span>
+
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="pill"><span class="dot"></span> Matematika &bull; Kelas X SMA &bull; Interaktif</span>
+      <h1>Jelajahi Dunia <span class="grad">Sistem Persamaan Linear</span></h1>
+      <p class="lead">Kuasai SPLDV dan SPLTV lewat simulasi grafik yang hidup, laboratorium langkah penyelesaian, contoh soal bertahap, kuis berpembahasan, dan turnamen matematika melawan para master aljabar.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#materi" id="ctaLearn">Mulai Belajar</a>
+        <a class="btn btn-gold" href="#turnamen">Ikuti Turnamen</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-chip"><b>2</b><span>Topik Inti</span></div>
+        <div class="stat-chip"><b>4</b><span>Metode Solusi</span></div>
+        <div class="stat-chip"><b>10</b><span>Soal Kuis</span></div>
+        <div class="stat-chip"><b>8</b><span>Peserta Turnamen</span></div>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <div class="graphcard">
+        <svg viewBox="0 0 320 240">
+          <defs>
+            <linearGradient id="gl1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#67e8f9"/>
+            </linearGradient>
+            <linearGradient id="gl2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#fb7185"/>
+            </linearGradient>
+          </defs>
+          <g stroke="#1e2a44" stroke-width="1">
+            <line x1="0" y1="30" x2="320" y2="30"/><line x1="0" y1="60" x2="320" y2="60"/>
+            <line x1="0" y1="90" x2="320" y2="90"/><line x1="0" y1="120" x2="320" y2="120"/>
+            <line x1="0" y1="150" x2="320" y2="150"/><line x1="0" y1="180" x2="320" y2="180"/>
+            <line x1="0" y1="210" x2="320" y2="210"/>
+            <line x1="40" y1="0" x2="40" y2="240"/><line x1="80" y1="0" x2="80" y2="240"/>
+            <line x1="120" y1="0" x2="120" y2="240"/><line x1="160" y1="0" x2="160" y2="240"/>
+            <line x1="200" y1="0" x2="200" y2="240"/><line x1="240" y1="0" x2="240" y2="240"/>
+            <line x1="280" y1="0" x2="280" y2="240"/>
+          </g>
+          <line x1="0" y1="120" x2="320" y2="120" stroke="#3b4a6b" stroke-width="1.5"/>
+          <line x1="160" y1="0" x2="160" y2="240" stroke="#3b4a6b" stroke-width="1.5"/>
+          <!-- L1: 2x + y = 8 -->
+          <line x1="20" y1="220" x2="300" y2="10" stroke="url(#gl1)" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- L2: x + 2y = 7 -->
+          <line x1="25" y1="8" x2="295" y2="188" stroke="url(#gl2)" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- solusi (3,2) -->
+          <circle cx="184" cy="96" r="13" fill="#fbbf24" opacity=".25"/>
+          <circle cx="184" cy="96" r="6.5" fill="#fbbf24"/>
+          <g stroke="#fbbf24" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8">
+            <line x1="184" y1="96" x2="184" y2="120"/>
+            <line x1="184" y1="96" x2="160" y2="96"/>
+          </g>
+          <text x="236" y="126" fill="#5b6b8c" font-size="10" font-family="monospace">X</text>
+          <text x="166" y="14" fill="#5b6b8c" font-size="10" font-family="monospace">Y</text>
+          <text x="192" y="90" fill="#fbbf24" font-size="11" font-weight="bold" font-family="monospace">(3, 2)</text>
+        </svg>
+      </div>
+      <div class="eq-badge b1 math">2x + y = 8</div>
+      <div class="eq-badge b2 math">x + 2y = 7</div>
+      <div class="eq-badge b3 math">HP = {(3, 2)}</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MATERI ================= -->
+<section class="section" id="materi">
+  <span class="sec-num">01</span>
+  <div class="sec-head reveal">
+    <span class="kicker">Materi</span>
+    <h2>Pahami Konsepnya <span class="grad">Dua Menit</span> Saja</h2>
+    <p>Pilih tab di bawah untuk mempelajari Sistem Persamaan Linear Dua Variabel (SPLDV) atau Tiga Variabel (SPLTV) beserta metode penyelesaiannya.</p>
+  </div>
+
+  <div class="tabs reveal">
+    <button class="tab-btn active" data-mtab="dv">SPLDV</button>
+    <button class="tab-btn" data-mtab="tv">SPLTV</button>
+  </div>
+
+  <!-- SPLDV -->
+  <div class="tab-panel active" id="mtab-dv">
+    <div class="card def-card reveal">
+      <div>
+        <span class="tag cyan">Definisi</span>
+        <h3 style="margin:12px 0 10px;font-size:1.25rem">Apa itu SPLDV?</h3>
+        <p class="muted">Sistem persamaan linear dua variabel adalah <b style="color:var(--text)">dua persamaan linear</b> dengan <b style="color:var(--text)">dua variabel</b> (biasanya <span class="math">x</span> dan <span class="math">y</span>) yang berlaku <b style="color:var(--text)">bersama-sama</b>. Penyelesaiannya adalah pasangan <span class="math">(x, y)</span> yang memenuhi <i>kedua</i> persamaan sekaligus — secara grafik, yaitu titik potong kedua garis.</p>
+      </div>
+      <div class="formula-box">
+        <small>Bentuk Umum</small>
+        <span class="math">a&#8321;x + b&#8321;y = c&#8321;</span>
+        <span class="math">a&#8322;x + b&#8322;y = c&#8322;</span>
+        <small>dengan a, b, c bilangan real dan a, b tidak sama-sama nol</small>
+      </div>
+    </div>
+
+    <h3 style="margin:26px 0 14px;font-size:1.15rem" class="reveal">Tiga Kemungkinan Solusi</h3>
+    <div class="grid g3">
+      <div class="card reveal">
+        <svg class="mini-svg" viewBox="0 0 160 100">
+          <line x1="10" y1="90" x2="150" y2="10" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+          <line x1="20" y1="15" x2="140" y2="85" stroke="#f472b6" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="80" cy="50" r="6" fill="#fbbf24"/>
+        </svg>
+        <div class="card-h"><span class="icbox c-green" data-ic="check"></span><h3>Tepat Satu Solusi</h3></div>
+        <p class="muted" style="font-size:.9rem">Kedua garis <b style="color:var(--text)">berpotongan</b> di satu titik. Terjadi saat:</p>
+        <div class="math math-block" style="margin-bottom:0">a&#8321;/a&#8322; &ne; b&#8321;/b&#8322;</div>
+      </div>
+      <div class="card reveal">
+        <svg class="mini-svg" viewBox="0 0 160 100">
+          <line x1="10" y1="70" x2="150" y2="28" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+          <line x1="10" y1="88" x2="150" y2="46" stroke="#f472b6" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="card-h"><span class="icbox c-pink" data-ic="cross"></span><h3>Tidak Ada Solusi</h3></div>
+        <p class="muted" style="font-size:.9rem">Kedua garis <b style="color:var(--text)">sejajar</b>, tidak pernah bertemu. Terjadi saat:</p>
+        <div class="math math-block" style="margin-bottom:0">a&#8321;/a&#8322; = b&#8321;/b&#8322; &ne; c&#8321;/c&#8322;</div>
+      </div>
+      <div class="card reveal">
+        <svg class="mini-svg" viewBox="0 0 160 100">
+          <line x1="10" y1="76" x2="150" y2="24" stroke="#22d3ee" stroke-width="6" stroke-linecap="round" opacity=".5"/>
+          <line x1="10" y1="76" x2="150" y2="24" stroke="#f472b6" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/>
+        </svg>
+        <div class="card-h"><span class="icbox c-gold" data-ic="spark"></span><h3>Tak Berhingga Solusi</h3></div>
+        <p class="muted" style="font-size:.9rem">Kedua garis <b style="color:var(--text)">berhimpit</b>; semua titik adalah solusi. Terjadi saat:</p>
+        <div class="math math-block" style="margin-bottom:0">a&#8321;/a&#8322; = b&#8321;/b&#8322; = c&#8321;/c&#8322;</div>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 14px;font-size:1.15rem" class="reveal">Empat Metode Penyelesaian SPLDV</h3>
+    <div class="grid g4">
+      <div class="card reveal">
+        <div class="card-h"><span class="method-num">1</span><h3>Grafik</h3></div>
+        <p class="muted" style="font-size:.9rem">Gambar kedua garis pada bidang Cartesius. Titik potongnya adalah penyelesaian. Cocok untuk memvisualisasikan makna solusi.</p>
+      </div>
+      <div class="card reveal">
+        <div class="card-h"><span class="method-num">2</span><h3>Substitusi</h3></div>
+        <p class="muted" style="font-size:.9rem">Nyatakan satu variabel dari sebuah persamaan (misal <span class="math">y = &hellip;</span>), lalu <b style="color:var(--text)">gantikan</b> ke persamaan lainnya.</p>
+      </div>
+      <div class="card reveal">
+        <div class="card-h"><span class="method-num">3</span><h3>Eliminasi</h3></div>
+        <p class="muted" style="font-size:.9rem">Samakan koefisien salah satu variabel, lalu <b style="color:var(--text)">jumlahkan atau kurangkan</b> kedua persamaan agar variabel itu hilang.</p>
+      </div>
+      <div class="card reveal">
+        <div class="card-h"><span class="method-num">4</span><h3>Campuran</h3></div>
+        <p class="muted" style="font-size:.9rem">Eliminasi untuk mendapat variabel pertama, lalu substitusi balik untuk variabel kedua. Paling cepat untuk soal ujian.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPLTV -->
+  <div class="tab-panel" id="mtab-tv">
+    <div class="card def-card reveal">
+      <div>
+        <span class="tag violet">Definisi</span>
+        <h3 style="margin:12px 0 10px;font-size:1.25rem">Naik Level: SPLTV</h3>
+        <p class="muted">SPLTV terdiri dari <b style="color:var(--text)">tiga persamaan linear</b> dengan <b style="color:var(--text)">tiga variabel</b> <span class="math">x, y, z</span>. Setiap persamaan menggambarkan sebuah <b style="color:var(--text)">bidang datar di ruang tiga dimensi</b>; penyelesaiannya adalah titik <span class="math">(x, y, z)</span> tempat ketiga bidang itu berpotongan.</p>
+      </div>
+      <div class="formula-box">
+        <small>Bentuk Umum</small>
+        <span class="math">a&#8321;x + b&#8321;y + c&#8321;z = d&#8321;</span>
+        <span class="math">a&#8322;x + b&#8322;y + c&#8322;z = d&#8322;</span>
+        <span class="math">a&#8323;x + b&#8323;y + c&#8323;z = d&#8323;</span>
+      </div>
+    </div>
+
+    <h3 style="margin:26px 0 14px;font-size:1.15rem" class="reveal">Strategi Bertingkat: Kunci Menaklukkan SPLTV</h3>
+    <div class="card reveal">
+      <div class="step-flow">
+        <div class="sf">
+          <b><span class="method-num">1</span> Eliminasi ke 2 variabel</b>
+          <span class="muted" style="font-size:.87rem">Pilih satu variabel "tumbal" (misal <span class="math">z</span>). Gabungkan pasangan persamaan untuk menghilangkannya &rarr; dapat <b style="color:var(--text)">dua persamaan baru</b> dalam <span class="math">x</span> dan <span class="math">y</span>.</span>
+        </div>
+        <span class="arr">&rarr;</span>
+        <div class="sf">
+          <b><span class="method-num">2</span> Selesaikan seperti SPLDV</b>
+          <span class="muted" style="font-size:.87rem">Dua persamaan baru itu adalah SPLDV biasa. Eliminasi lagi untuk mendapat nilai <b style="color:var(--text)">variabel pertama</b>.</span>
+        </div>
+        <span class="arr">&rarr;</span>
+        <div class="sf">
+          <b><span class="method-num">3</span> Substitusi balik</b>
+          <span class="muted" style="font-size:.87rem">Masukkan nilai yang sudah didapat ke persamaan sebelumnya sampai seluruh <span class="math">x, y, z</span> ditemukan.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="card reveal">
+        <div class="card-h"><span class="icbox c-violet" data-ic="target"></span><h3>Tips Memilih Variabel "Tumbal"</h3></div>
+        <ul class="checklist">
+          <li data-lic="check">Pilih variabel dengan koefisien 1 atau &minus;1 &mdash; perhitungan jadi ringan.</li>
+          <li data-lic="check">Pilih variabel yang koefisiennya sama (atau berlawanan) di dua persamaan.</li>
+          <li data-lic="check">Disiplin: variabel yang dihilangkan di langkah pertama harus sama untuk semua pasangan persamaan.</li>
+        </ul>
+      </div>
+      <div class="card reveal">
+        <div class="card-h"><span class="icbox c-pink" data-ic="zap"></span><h3>Kesalahan yang Sering Terjadi</h3></div>
+        <ul class="checklist">
+          <li data-lic="cross" style="--c:var(--red)">Salah tanda saat mengurangkan persamaan &mdash; tulis operasi seperti (2) &minus; 2&times;(1) secara eksplisit.</li>
+          <li data-lic="cross">Menghilangkan variabel berbeda untuk pasangan persamaan berbeda.</li>
+          <li data-lic="cross">Lupa memeriksa jawaban: selalu substitusikan hasil <span class="math">(x, y, z)</span> ke ketiga persamaan awal.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SIMULASI ================= -->
+<section class="section" id="simulasi">
+  <span class="sec-num">02</span>
+  <div class="sec-head reveal">
+    <span class="kicker" style="color:var(--violet)">Simulasi</span>
+    <h2>Laboratorium <span class="grad">Interaktif</span></h2>
+    <p>Geser, ubah, dan amati. Lihat sendiri bagaimana koefisien mengubah garis, titik potong, dan langkah-langkah aljabar penyelesaiannya.</p>
+  </div>
+
+  <div class="tabs reveal">
+    <button class="tab-btn active" data-stab="grafik">Grafik SPLDV</button>
+    <button class="tab-btn" data-stab="labtv">Lab Penyelesaian SPLTV</button>
+  </div>
+
+  <!-- SIM GRAFIK SPLDV -->
+  <div class="tab-panel active" id="stab-grafik">
+    <div class="sim-grid">
+      <div>
+        <div class="canvas-wrap reveal">
+          <canvas id="graphCanvas" width="640" height="480"></canvas>
+          <div class="canvas-legend">
+            <span class="leg"><i class="l1c"></i><span id="legL1" class="math">L&#8321;</span></span>
+            <span class="leg"><i class="l2c"></i><span id="legL2" class="math">L&#8322;</span></span>
+          </div>
+        </div>
+        <div class="card readout reveal" id="graphReadout"></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-h"><span class="icbox c-violet" data-ic="sliders"></span><h3>Panel Kontrol</h3></div>
+        <p class="muted" style="font-size:.85rem;margin-bottom:10px">Atur koefisien <span class="math">ax + by = c</span> untuk tiap garis.</p>
+        <div style="font-size:.76rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Garis 1 &mdash; <span class="math">a&#8321;x + b&#8321;y = c&#8321;</span></div>
+        <div id="slidersL1"></div>
+        <div class="sim-hr"></div>
+        <div style="font-size:.76rem;font-weight:800;color:var(--pink);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Garis 2 &mdash; <span class="math">a&#8322;x + b&#8322;y = c&#8322;</span></div>
+        <div id="slidersL2"></div>
+        <div class="sim-hr"></div>
+        <p class="muted" style="font-size:.82rem;margin-bottom:10px">Coba skenario cepat:</p>
+        <div class="btnrow">
+          <button class="btn btn-sm btn-ghost" data-preset="cut">Berpotongan</button>
+          <button class="btn btn-sm btn-ghost" data-preset="par">Sejajar</button>
+          <button class="btn btn-sm btn-ghost" data-preset="coin">Berhimpit</button>
+          <button class="btn btn-sm btn-violet" data-preset="rand">Acak</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAB SPLTV -->
+  <div class="tab-panel" id="stab-labtv">
+    <div class="sim-grid">
+      <div class="card reveal">
+        <div class="card-h"><span class="icbox c-violet" data-ic="edit"></span><h3>Rakit Sistemu Sendiri</h3></div>
+        <p class="muted" style="font-size:.87rem;margin-bottom:16px">Isi koefisien untuk tiga persamaan <span class="math">ax + by + cz = d</span>, lalu biarkan mesin menyelesaikannya langkah demi langkah.</p>
+        <div class="coef-grid" id="tvInputs"></div>
+        <div class="btnrow">
+          <button class="btn btn-sm btn-violet" id="btnSolveTV">Selesaikan</button>
+          <button class="btn btn-sm btn-ghost" id="btnPresetTV">Contoh Klasik</button>
+          <button class="btn btn-sm btn-ghost" id="btnRandTV">Acak (Solusi Bulat)</button>
+        </div>
+      </div>
+      <div class="card reveal">
+        <div class="card-h"><span class="icbox c-cyan" data-ic="book"></span><h3>Langkah Penyelesaian</h3></div>
+        <div id="tvSteps" class="steps-stack">
+          <p class="muted" style="font-size:.9rem">Tekan <b style="color:var(--text)">Selesaikan</b> untuk melihat proses eliminasi dan substitusi balik di sini.</p>
+        </div>
+        <div class="btnrow" id="tvStepCtl" style="display:none">
+          <button class="btn btn-sm" id="btnNextStep">Langkah Berikutnya</button>
+          <button class="btn btn-sm btn-ghost" id="btnAutoStep">Putar Otomatis</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTOH SOAL ================= -->
+<section class="section" id="contoh">
+  <span class="sec-num">03</span>
+  <div class="sec-head reveal">
+    <span class="kicker" style="color:var(--green)">Contoh Soal</span>
+    <h2>Bedah Soal <span class="grad">Langkah demi Langkah</span></h2>
+    <p>Klik "Tampilkan Langkah" pada tiap kartu dan ikuti alur berpikirnya — dari model matematika sampai kesimpulan.</p>
+  </div>
+  <div class="ex-grid" id="exGrid"></div>
+</section>
+
+<!-- ================= KUIS ================= -->
+<section class="section" id="kuis">
+  <span class="sec-num">04</span>
+  <div class="sec-head reveal">
+    <span class="kicker" style="color:var(--pink)">Kuis</span>
+    <h2>Uji <span class="grad">Pemahamanmu</span></h2>
+    <p>10 soal pilihan ganda tentang SPLDV dan SPLTV, lengkap dengan pembahasan di setiap soal.</p>
+  </div>
+  <div class="quiz-shell reveal" id="quizRoot"></div>
+</section>
+
+<!-- ================= TURNAMEN ================= -->
+<section class="section" id="turnamen">
+  <span class="sec-num">05</span>
+  <div class="sec-head reveal">
+    <span class="kicker" style="color:var(--gold)">Turnamen</span>
+    <h2>Piala <span class="grad">Aljabar</span></h2>
+    <p>Sistem gugur 8 peserta. Kalahkan tiga master matematika berturut-turut untuk mengangkat trofi dan mencatatkan namamu di papan peringkat.</p>
+  </div>
+  <div class="reveal" id="tourneyRoot"></div>
+</section>
+
+<footer>
+  <div class="brand">
+    <span class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round">
+        <path d="M3 21h18M3 21V3" stroke="#95a3be"/><path d="M4 17L20 6" stroke="#22d3ee"/><path d="M6 5l13 14" stroke="#f472b6"/><circle cx="11.2" cy="12.4" r="2.1" fill="#fbbf24" stroke="none"/>
+      </svg>
+    </span>
+    <span>Linier<b>Lab</b></span>
+  </div>
+  <p>Media pembelajaran interaktif Matematika Kelas X &mdash; Sistem Persamaan Linear Dua &amp; Tiga Variabel.</p>
+</footer>
+
+<script>
+/* =====================================================
+   UTILITAS DASAR
+===================================================== */
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=arr=>arr[ri(0,arr.length-1)];
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function gg(a,b){a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t}return a||1}
+const nS=n=>String(n).replace(/-/g,'\u2212');
+const rp=n=> 'Rp'+String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+(n<0?' (\u2212)':'');
+
+/* Pecahan eksak untuk perhitungan langkah */
+class Fr{
+  constructor(n,d=1){
+    if(d<0){n=-n;d=-d}
+    const g=gg(Math.abs(n),Math.abs(d));
+    this.n=n/g;this.d=d/g;
+  }
+  add(o){return new Fr(this.n*o.d+o.n*this.d,this.d*o.d)}
+  sub(o){return new Fr(this.n*o.d-o.n*this.d,this.d*o.d)}
+  mul(o){return new Fr(this.n*o.n,this.d*o.d)}
+  div(o){return new Fr(this.n*o.d,this.d*o.n)}
+  zero(){return this.n===0}
+}
+const F=n=>new Fr(n,1);
+function fs(f){
+  if(f.d===1)return nS(f.n);
+  const neg=f.n<0, n=Math.abs(f.n);
+  return (neg?'\u2212':'')+n+'/'+f.d;
+}
+/* Format bentuk linear: [{c:Fr, v:'x'|null}] -> "2x \u2212 3y + 5" */
+function fmtTerms(terms){
+  let out='';
+  for(const t of terms){
+    if(t.c.zero())continue;
+    const neg=t.c.n<0;
+    const abs=new Fr(Math.abs(t.c.n),t.c.d);
+    let coef=fs(abs);
+    if(t.v&&abs.n===1&&abs.d===1)coef='';
+    const sp=out===''?(neg?'\u2212':''):(neg?' \u2212 ':' + ');
+    out+=sp+coef+(t.v||'');
+  }
+  return out===''?'0':out;
+}
+const eqLine=(label,txt)=>'<div class="eq-line">'+(label?'<span class="eq-tag">'+label+'</span>':'<span class="eq-tag" style="visibility:hidden">(0)</span>')+'<span>'+txt+'</span></div>';
+
+/* =====================================================
+   IKON SVG (tanpa emoji)
+===================================================== */
+const ICONS={
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  cross:'<path d="M18 6L6 18M6 6l12 12"/>',
+  trophy:'<path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4.5A2.5 2.5 0 0 0 7 11M17 6h2.5A2.5 2.5 0 0 1 17 11"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  spark:'<path d="M12 3l1.9 4.6 4.6 1.9-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/>',
+  zap:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
+  book:'<path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
+  users:'<circle cx="9" cy="8" r="3.4"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M15.5 5.2a3.4 3.4 0 0 1 0 6.6M17.6 14.4a6.2 6.2 0 0 1 3.6 5.6"/>',
+  medal:'<circle cx="12" cy="9" r="5.5"/><path d="M8.8 13.6 7 21l5-2.7L17 21l-1.8-7.4"/>',
+  sliders:'<path d="M4 21v-6M4 10V3M12 21v-8M12 8V3M20 21v-4M20 12V3"/><circle cx="4" cy="12" r="2.2"/><circle cx="12" cy="10" r="2.2"/><circle cx="20" cy="14" r="2.2"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  play:'<path d="M7 4.5v15l12-7.5z"/>',
+  refresh:'<path d="M21 12a9 9 0 1 1-2.7-6.4M21 4v5h-5"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  crown:'<path d="M3 17.5 4.6 8.6 9 13l3-8 3 8 4.4-4.4L21 17.5z"/><path d="M5.5 21h13"/>',
+  idea:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.3 11c.7.5 1.3 1.2 1.3 2h4c0-.8.6-1.5 1.3-2A6 6 0 0 0 12 3z"/>',
+  flag:'<path d="M5 21V4"/><path d="M5 4h13l-3 4 3 4H5"/>'
+};
+const FILLED=new Set(['zap','spark','play','crown']);
+function ic(n,cls=''){
+  const fill=FILLED.has(n);
+  return '<svg class="ic '+cls+'" viewBox="0 0 24 24" '+(fill?'fill="currentColor" stroke="none"':'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')+'>'+(ICONS[n]||'')+'</svg>';
+}
+/* pasang ikon yang dideklarasikan via data-ic / list item */
+$$('[data-ic]').forEach(el=>{el.innerHTML=ic(el.dataset.ic)});
+$$('ul.checklist li').forEach(li=>{
+  const k=li.dataset.lic||'check';
+  const s=document.createElement('span');
+  s.innerHTML=ic(k);const svg=s.firstChild;
+  if(k==='cross')svg.style.color='var(--red)';
+  li.prepend(svg);
+});
+
+/* =====================================================
+   NAV & EFEK REVEAL
+===================================================== */
+const navLinks=$$('.nav-link');
+const secIds=['beranda','materi','simulasi','contoh','kuis','turnamen'];
+const secObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -55% 0px'});
+secIds.forEach(id=>{const el=document.getElementById(id);if(el)secObs.observe(el)});
+const revObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');revObs.unobserve(e.target)}})},{threshold:.12});
+$$('.reveal').forEach(el=>revObs.observe(el));
+
+/* tab handler generik */
+function bindTabs(attr,panelPrefix){
+  $$('['+attr+']').forEach(btn=>btn.addEventListener('click',()=>{
+    $$('['+attr+']').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const key=btn.getAttribute(attr);
+    $$('.tab-panel').forEach(p=>{ if(p.id.startsWith(panelPrefix)) p.classList.toggle('active',p.id===panelPrefix+'-'+key)});
+  }));
+}
+
+/* =====================================================
+   SIMULASI 1: GRAFIK SPLDV
+===================================================== */
+const cv=$('#graphCanvas'),ctx=cv.getContext('2d');
+const SIM={a1:2,b1:1,c1:8,a2:1,b2:2,c2:7};
+const SIMCFG=[
+  {k:'a1',label:'a&#8321;',min:-5,max:5},{k:'b1',label:'b&#8321;',min:-5,max:5},{k:'c1',label:'c&#8321;',min:-10,max:10},
+  {k:'a2',label:'a&#8322;',min:-5,max:5},{k:'b2',label:'b&#8322;',min:-5,max:5},{k:'c2',label:'c&#8322;',min:-10,max:10},
+];
+function buildSliders(){
+  const mk=(keys,host)=>{
+    host.innerHTML='';
+    keys.forEach(cfg=>{
+      const row=document.createElement('div');row.className='slider-row';
+      row.innerHTML='<span class="slabel math">'+cfg.label+'</span>'+
+        '<input type="range" min="'+cfg.min+'" max="'+cfg.max+'" step="1" value="'+SIM[cfg.k]+'" data-simk="'+cfg.k+'">'+
+        '<input type="number" min="'+cfg.min+'" max="'+cfg.max+'" value="'+SIM[cfg.k]+'" data-simn="'+cfg.k+'">';
+      host.appendChild(row);
+    });
+  };
+  mk(SIMCFG.slice(0,3),$('#slidersL1'));
+  mk(SIMCFG.slice(3),$('#slidersL2'));
+  $$('#simulasi [data-simk]').forEach(r=>r.addEventListener('input',()=>{SIM[r.dataset.simk]=+r.value;syncSimUI()}));
+  $$('#simulasi [data-simn]').forEach(nn=>nn.addEventListener('input',()=>{
+    let v=parseInt(nn.value);
+    if(isNaN(v))return;
+    const c=SIMCFG.find(x=>x.k===nn.dataset.simn);
+    v=Math.max(c.min,Math.min(c.max,v));
+    SIM[nn.dataset.simn]=v;syncSimUI();
+  }));
+}
+function syncSimUI(){
+  $$('#simulasi [data-simk]').forEach(r=>r.value=SIM[r.dataset.simk]);
+  $$('#simulasi [data-simn]').forEach(nn=>nn.value=SIM[nn.dataset.simn]);
+  drawGraph();updateReadout();
+}
+$$('#simulasi [data-preset]').forEach(b=>b.addEventListener('click',()=>{
+  const p=b.dataset.preset;
+  if(p==='cut')Object.assign(SIM,{a1:2,b1:1,c1:8,a2:1,b2:2,c2:7});
+  if(p==='par')Object.assign(SIM,{a1:1,b1:2,c1:4,a2:2,b2:4,c2:10});
+  if(p==='coin')Object.assign(SIM,{a1:1,b1:-1,c1:2,a2:2,b2:-2,c2:4});
+  if(p==='rand'){
+    let det=0,tries=0;
+    while(det===0&&tries<60){
+      SIM.a1=ri(-4,4)||1;SIM.b1=ri(-4,4)||-1;
+      SIM.a2=ri(-4,4)||2;SIM.b2=ri(-4,4)||-2;
+      det=SIM.a1*SIM.b2-SIM.a2*SIM.b1;tries++;
+    }
+    SIM.c1=ri(-9,9);SIM.c2=ri(-9,9);
+  }
+  syncSimUI();
+}));
+const GX=(x,W,pad)=>pad+(x+10)/20*(W-2*pad);
+const GY=(y,H,pad)=>H-pad-(y+10)/20*(H-2*pad);
+function drawGraph(){
+  const W=cv.width,H=cv.height,pad=34;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0a1020';ctx.fillRect(0,0,W,H);
+  /* grid */
+  for(let i=-10;i<=10;i++){
+    const px=GX(i,W,pad),py=GY(i,H,pad);
+    ctx.strokeStyle=i===0?'#3b4a6b':'#182240';
+    ctx.lineWidth=i===0?1.8:1;
+    ctx.beginPath();ctx.moveTo(px,pad);ctx.lineTo(px,H-pad);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pad,py);ctx.lineTo(W-pad,py);ctx.stroke();
+    if(i%2===0&&i!==0){
+      ctx.fillStyle='#5b6b8c';ctx.font='10px Consolas,monospace';ctx.textAlign='center';
+      ctx.fillText(i,px,H-pad+14);
+      ctx.fillText(i,pad-8,py+3);
+    }
+  }
+  ctx.fillStyle='#7d8db0';ctx.font='bold 11px Consolas,monospace';
+  ctx.fillText('x',W-pad+2,H-pad+14);ctx.fillText('y',pad-8,pad-6);
+  /* garis */
+  drawLine(SIM.a1,SIM.b1,SIM.c1,'#22d3ee',W,H,pad);
+  drawLine(SIM.a2,SIM.b2,SIM.c2,'#f472b6',W,H,pad);
+  /* titik potong */
+  const det=SIM.a1*SIM.b2-SIM.a2*SIM.b1;
+  if(det!==0){
+    const x=(SIM.c1*SIM.b2-SIM.c2*SIM.b1)/det;
+    const y=(SIM.a1*SIM.c2-SIM.a2*SIM.c1)/det;
+    if(Math.abs(x)<=10.2&&Math.abs(y)<=10.2){
+      const px=GX(x,W,pad),py=GY(y,H,pad);
+      ctx.strokeStyle='rgba(251,191,36,.85)';ctx.lineWidth=1.4;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px,GY(0,H,pad));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(GX(0,W,pad),py);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='rgba(251,191,36,.22)';ctx.beginPath();ctx.arc(px,py,13,0,7);ctx.fill();
+      ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(px,py,5.5,0,7);ctx.fill();
+      const lbl='('+nS(Math.round(x*100)/100)+', '+nS(Math.round(y*100)/100)+')';
+      ctx.font='bold 12px Consolas,monospace';
+      const tw=ctx.measureText(lbl).width;
+      const lx=Math.min(Math.max(px+10,pad),W-pad-tw-10),ly=Math.max(py-12,pad+12);
+      ctx.fillStyle='rgba(10,16,32,.9)';ctx.fillRect(lx-5,ly-13,tw+10,19);
+      ctx.fillStyle='#fbbf24';ctx.textAlign='left';ctx.fillText(lbl,lx,ly);
+    }
+  }
+}
+function drawLine(a,b,c,color,W,H,pad){
+  ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineCap='round';
+  ctx.save();ctx.beginPath();ctx.rect(pad,pad,W-2*pad,H-2*pad);ctx.clip();
+  ctx.beginPath();
+  if(Math.abs(b)>1e-9){
+    const y1=(c-a*(-10))/b,y2=(c-a*10)/b;
+    ctx.moveTo(GX(-10,W,pad),GY(y1,H,pad));ctx.lineTo(GX(10,W,pad),GY(y2,H,pad));
+  }else if(Math.abs(a)>1e-9){
+    const x=c/a;
+    ctx.moveTo(GX(x,W,pad),pad);ctx.lineTo(GX(x,W,pad),H-pad);
+  }else{ctx.restore();return}
+  ctx.stroke();ctx.restore();
+}
+function updateReadout(){
+  const {a1,b1,c1,a2,b2,c2}=SIM;
+  const eq1=fmtTerms([{c:F(a1),v:'x'},{c:F(b1),v:'y'}])+' = '+nS(c1);
+  const eq2=fmtTerms([{c:F(a2),v:'x'},{c:F(b2),v:'y'}])+' = '+nS(c2);
+  $('#legL1').textContent=eq1;$('#legL2').textContent=eq2;
+  const det=a1*b2-a2*b1;
+  let badge='',body='';
+  const sys='<div class="math math-block">'+eqLine('(1)',eq1)+eqLine('(2)',eq2)+'</div>';
+  if(det!==0){
+    const numX=c1*b2-c2*b1, numY=a1*c2-a2*c1;
+    const xF=new Fr(numX,Math.abs(det)*Math.sign(det)), yF=new Fr(numY,Math.abs(det)*Math.sign(det));
+    badge='<span class="status-badge ok">'+ic('check')+' Satu solusi: garis berpotongan</span>';
+    body='<div class="math math-block">'+
+      eqLine('det','det = a\u2081\u00b7b\u2082 \u2212 a\u2082\u00b7b\u2081 = ('+nS(a1)+')('+nS(b2)+') \u2212 ('+nS(a2)+')('+nS(b1)+') = <span class="hl">'+nS(det)+'</span>')+
+      eqLine('x','x = (c\u2081\u00b7b\u2082 \u2212 c\u2082\u00b7b\u2081)/det = ('+nS(numX)+')/('+nS(det)+') = <span class="hlc">'+fs(xF)+'</span>')+
+      eqLine('y','y = (a\u2081\u00b7c\u2082 \u2212 a\u2082\u00b7c\u2081)/det = ('+nS(numY)+')/('+nS(det)+') = <span class="hlp">'+fs(yF)+'</span>')+
+      eqLine('HP','HP = { (<span class="hlc">'+fs(xF)+'</span>, <span class="hlp">'+fs(yF)+'</span>) }')+
+      '</div>';
+  }else{
+    const coincident=(a1*c2===a2*c1)&&(b1*c2===b2*c1);
+    if(coincident){
+      badge='<span class="status-badge warn">'+ic('spark')+' Tak berhingga solusi: kedua garis berhimpit</span>';
+      body='<p class="muted" style="font-size:.92rem">Persamaan (2) adalah kelipatan persamaan (1), sehingga semua titik pada garis itu memenuhi sistem. Solusinya: <span class="math" style="color:var(--text)">{(x, y) | '+eq1+'}</span>.</p>';
+    }else{
+      badge='<span class="status-badge none">'+ic('cross')+' Tidak ada solusi: garis sejajar</span>';
+      body='<p class="muted" style="font-size:.92rem">Gradien kedua garis sama tetapi konstantanya berbeda, jadi keduanya tidak pernah berpotongan. Himpunan penyelesaian kosong <span class="math" style="color:var(--text)">HP = { }</span>.</p>';
+    }
+  }
+  $('#graphReadout').innerHTML='<div class="card-h"><span class="icbox c-cyan" data-icfx>+</span><h3>Hasil Analisis Sistem</h3></div>'+
+    '<div style="margin-bottom:12px">'+badge+'</div>'+sys+body;
+  const ib=$('#graphReadout [data-icfx]');if(ib)ib.innerHTML=ic('target');
+}
+
+/* =====================================================
+   SIMULASI 2: LAB PENYELESAIAN SPLTV
+===================================================== */
+const TVKEYS=[['a1','b1','c1','d1'],['a2','b2','c2','d2'],['a3','b3','c3','d3']];
+let TV={a1:1,b1:1,c1:1,d1:6, a2:2,b2:-1,c2:1,d2:3, a3:1,b3:2,c3:-1,d3:2};
+function buildTVInputs(){
+  const host=$('#tvInputs');host.innerHTML='';
+  TVKEYS.forEach((row,i)=>{
+    const div=document.createElement('div');div.className='coef-row';
+    div.innerHTML='<span class="eq-tag" style="flex:none">('+(i+1)+')</span>'+
+      '<input data-tv="'+row[0]+'"><span class="vn">x</span><span class="op">+</span>'+
+      '<input data-tv="'+row[1]+'"><span class="vn">y</span><span class="op">+</span>'+
+      '<input data-tv="'+row[2]+'"><span class="vn">z</span><span class="eql">=</span>'+
+      '<input data-tv="'+row[3]+'">';
+    host.appendChild(div);
+  });
+  $$('#tvInputs [data-tv]').forEach(inp=>{
+    inp.type='number';inp.step='1';
+    inp.addEventListener('input',()=>{const v=parseInt(inp.value);if(!isNaN(v))TV[inp.dataset.tv]=v;});
+  });
+  syncTVInputs();
+}
+function syncTVInputs(){$$('#tvInputs [data-tv]').forEach(inp=>inp.value=TV[inp.dataset.tv]);}
+
+let tvStepsState={steps:[],shown:0,timer:null};
+function stopTvAuto(){if(tvStepsState.timer){clearInterval(tvStepsState.timer);tvStepsState.timer=null;$('#btnAutoStep').textContent='Putar Otomatis';}}
+function renderTvStep(i){
+  const s=tvStepsState.steps[i];
+  const d=document.createElement('div');
+  d.className='step-card'+(s.kind==='fin'?' fin':s.kind==='bad'?' bad':'');
+  d.innerHTML='<h4>'+(s.kind==='fin'?ic('flag'):s.kind==='bad'?ic('cross'):ic('arrow'))+' '+s.title+'</h4><div>'+s.html+'</div>';
+  $('#tvSteps').appendChild(d);
+}
+function showStepsReset(){
+  stopTvAuto();
+  $('#tvSteps').innerHTML='';tvStepsState.shown=0;
+}
+function solveTV(){
+  const nums=[[TV.a1,TV.b1,TV.c1,TV.d1],[TV.a2,TV.b2,TV.c2,TV.d2],[TV.a3,TV.b3,TV.c3,TV.d3]];
+  const R=nums.map(r=>r.map(v=>F(v)));
+  const L=['(1)','(2)','(3)'];
+  const steps=[];
+  const sysHtml=(rows,labs,note)=>{
+    let h='<div class="math math-block">';
+    rows.forEach((r,i)=>{h+=eqLine(labs[i],fmtTerms([{c:r[0],v:'x'},{c:r[1],v:'y'},{c:r[2],v:'z'}])+' = '+fs(r[3]))});
+    h+='</div>';if(note)h+='<p class="muted" style="font-size:.86rem">'+note+'</p>';return h;
+  };
+  steps.push({title:'Sistem awal',html:sysHtml(R,L,'Strategi: hilangkan <b style="color:var(--text)">x</b> dari persamaan (2) dan (3) terlebih dahulu.')});
+  let lab=4;
+  const singular=()=>{steps.push({title:'Berhenti',kind:'bad',html:'<p style="font-size:.92rem">Sistem ini tidak memiliki solusi tunggal (determinan sistem nol). Coba ubah koefisiennya atau tekan <b>Acak</b>.</p>'})};
+  for(let i=1;i<=2;i++){
+    if(R[0][0].zero()){
+      let k=-1;for(let j=1;j<3;j++){if(!R[j][0].zero()){k=j;break}}
+      if(k===-1){singular();return steps}
+      [R[0],R[k]]=[R[k],R[0]];[L[0],L[k]]=[L[k],L[0]];
+      steps.push({title:'Tukar posisi persamaan',html:'<p class="muted" style="font-size:.9rem">Koefisien x pada persamaan teratas nol, jadi ditukar agar bisa dijadikan pivot.</p>'+sysHtml(R,L,'')});
+    }
+    const m=R[i][0].div(R[0][0]);
+    const nr=R[i].map((v,j)=>v.sub(m.mul(R[0][j])));
+    const newLab='('+lab+')';lab++;
+    const mTxt=m.zero()?'0':fs(m);
+    steps.push({title:'Eliminasi x dari '+L[i],
+      html:'<div class="math math-block">'+eqLine('',L[i]+' \u2212 <span class="hl">'+mTxt+'</span>\u00d7'+L[0])+
+      eqLine(newLab,fmtTerms([{c:nr[1],v:'y'},{c:nr[2],v:'z'}])+' = '+fs(nr[3]))+'</div>'});
+    R[i]=nr;L[i]=newLab;
+  }
+  steps.push({title:'Sistem baru dalam y dan z',html:sysHtml(R,L,'Persamaan '+L[1]+' dan '+L[2]+' kini membentuk <b style="color:var(--text)">SPLDV</b>. Lanjut: hilangkan y.')});
+  if(R[1][1].zero()){
+    if(!R[2][1].zero()){
+      [R[1],R[2]]=[R[2],R[1]];[L[1],L[2]]=[L[2],L[1]];
+      steps.push({title:'Tukar '+L[1]+' dan '+L[2],html:'<p class="muted" style="font-size:.9rem">Ditukar agar pivot y tidak nol.</p>'});
+    }else{singular();return steps}
+  }
+  const m2=R[2][1].div(R[1][1]);
+  const nr3=R[2].map((v,j)=>v.sub(m2.mul(R[1][j])));
+  const lab6='('+lab+')';
+  steps.push({title:'Eliminasi y dari '+L[2],
+    html:'<div class="math math-block">'+eqLine('',L[2]+' \u2212 <span class="hl">'+fs(m2)+'</span>\u00d7'+L[1])+
+    eqLine(lab6,fmtTerms([{c:nr3[2],v:'z'}])+' = '+fs(nr3[3]))+'</div>'});
+  L[2]=lab6;R[2]=nr3;
+  if(nr3[2].zero()){singular();return steps}
+  const z=nr3[3].div(nr3[2]);
+  steps.push({title:'Nilai z ditemukan',
+    html:'<div class="math math-block">'+eqLine(lab6,fmtTerms([{c:nr3[2],v:'z'}])+' = '+fs(nr3[3]))+eqLine('','z = '+fs(nr3[3])+' / '+fs(nr3[2])+' = <span class="hl">'+fs(z)+'</span>')+'</div>'});
+  const rhsY=R[1][3].sub(R[1][2].mul(z));
+  const y=rhsY.div(R[1][1]);
+  steps.push({title:'Substitusi balik: cari y',
+    html:'<p class="muted" style="font-size:.9rem;margin-bottom:6px">Masukkan z = <span class="math" style="color:var(--gold)">'+fs(z)+'</span> ke '+L[1]+':</p>'+
+    '<div class="math math-block">'+eqLine(L[1],fmtTerms([{c:R[1][1],v:'y'},{c:R[1][2],v:'z'}])+' = '+fs(R[1][3]))+
+    eqLine('',fmtTerms([{c:R[1][1],v:'y'}])+' = '+fs(rhsY))+eqLine('','y = <span class="hlp">'+fs(y)+'</span>')+'</div>'});
+  const rhsX=R[0][3].sub(R[0][1].mul(y)).sub(R[0][2].mul(z));
+  const x=rhsX.div(R[0][0]);
+  steps.push({title:'Substitusi balik: cari x',
+    html:'<p class="muted" style="font-size:.9rem;margin-bottom:6px">Masukkan y = <span class="math" style="color:var(--pink)">'+fs(y)+'</span> dan z = <span class="math" style="color:var(--gold)">'+fs(z)+'</span> ke '+L[0]+':</p>'+
+    '<div class="math math-block">'+eqLine(L[0],fmtTerms([{c:R[0][0],v:'x'},{c:R[0][1],v:'y'},{c:R[0][2],v:'z'}])+' = '+fs(R[0][3]))+
+    eqLine('',fmtTerms([{c:R[0][0],v:'x'}])+' = '+fs(rhsX))+eqLine('','x = <span class="hlc">'+fs(x)+'</span>')+'</div>'});
+  steps.push({title:'Penyelesaian',kind:'fin',
+    html:'<div class="math math-block">'+eqLine('x','x = <span class="hlc">'+fs(x)+'</span>')+eqLine('y','y = <span class="hlp">'+fs(y)+'</span>')+eqLine('z','z = <span class="hl">'+fs(z)+'</span>')+
+    eqLine('HP','HP = { ('+fs(x)+', '+fs(y)+', '+fs(z)+') }')+'</div>'+
+    '<p class="muted" style="font-size:.86rem">Verifikasi: substitusikan kembali ke tiga persamaan awal &mdash; semuanya harus terpenuhi.</p>'});
+  return steps;
+}
+function startSolveTV(){
+  showStepsReset();
+  tvStepsState.steps=solveTV();
+  $('#tvStepCtl').style.display='flex';
+  $('#btnNextStep').disabled=false;
+  renderTvStep(0);tvStepsState.shown=1;
+}
+$('#btnSolveTV').addEventListener('click',startSolveTV);
+$('#btnNextStep').addEventListener('click',()=>{
+  if(tvStepsState.shown>=tvStepsState.steps.length)return;
+  renderTvStep(tvStepsState.shown);tvStepsState.shown++;
+  if(tvStepsState.shown>=tvStepsState.steps.length){$('#btnNextStep').disabled=true;stopTvAuto();}
+});
+$('#btnAutoStep').addEventListener('click',()=>{
+  if(tvStepsState.timer){stopTvAuto();return}
+  $('#btnAutoStep').textContent='Berhenti';
+  tvStepsState.timer=setInterval(()=>{
+    if(tvStepsState.shown>=tvStepsState.steps.length){stopTvAuto();$('#btnNextStep').disabled=true;return}
+    renderTvStep(tvStepsState.shown);tvStepsState.shown++;
+    if(tvStepsState.shown>=tvStepsState.steps.length){stopTvAuto();$('#btnNextStep').disabled=true;}
+  },1300);
+});
+$('#btnPresetTV').addEventListener('click',()=>{Object.assign(TV,{a1:1,b1:1,c1:1,d1:6,a2:2,b2:-1,c2:1,d2:3,a3:1,b3:2,c3:-1,d3:2});syncTVInputs();showStepsReset();$('#tvSteps').innerHTML='<p class="muted" style="font-size:.9rem">Tekan <b style="color:var(--text)">Selesaikan</b> untuk melihat langkah penyelesaiannya.</p>';$('#tvStepCtl').style.display='none';});
+$('#btnRandTV').addEventListener('click',()=>{
+  const x=ri(-3,4),y=ri(-3,4),z=ri(-3,4);
+  let M,det=0,tries=0;
+  while(det===0&&tries<80){
+    M=[0,1,2].map(()=>[ri(-3,3)||1,ri(-3,3)||-1,ri(-3,3)||2]);
+    det=M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1])-M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0])+M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]);
+    tries++;
+  }
+  const d=M.map(r=>r[0]*x+r[1]*y+r[2]*z);
+  Object.assign(TV,{a1:M[0][0],b1:M[0][1],c1:M[0][2],d1:d[0],a2:M[1][0],b2:M[1][1],c2:M[1][2],d2:d[1],a3:M[2][0],b3:M[2][1],c3:M[2][2],d3:d[2]});
+  syncTVInputs();showStepsReset();
+  $('#tvSteps').innerHTML='<p class="muted" style="font-size:.9rem">Tekan <b style="color:var(--text)">Selesaikan</b> untuk melihat langkah penyelesaiannya.</p>';$('#tvStepCtl').style.display='none';
+});
+
+/* =====================================================
+   CONTOH SOAL (reveal bertahap)
+===================================================== */
+const EXAMPLES=[
+  {tag:'SPLDV',cls:'cyan',title:'Metode Eliminasi',
+   problem:'Tentukan himpunan penyelesaian dari:<div class="math math-block" style="margin:8px 0 0">'+eqLine('(1)','2x + 3y = 12')+eqLine('(2)','x \u2212 y = 1')+'</div>',
+   steps:[
+    'Samakan koefisien x: kalikan persamaan (2) dengan 2 &rarr; <span class="math">2x \u2212 2y = 2</span> (disebut 2\u2032).',
+    'Kurangkan (1) \u2212 (2\u2032): <span class="math">(2x + 3y) \u2212 (2x \u2212 2y) = 12 \u2212 2</span> sehingga <span class="math">5y = 10</span>, maka <span class="math" style="color:var(--gold)">y = 2</span>.',
+    'Substitusikan y = 2 ke persamaan (2): <span class="math">x \u2212 2 = 1</span>, maka <span class="math" style="color:var(--cyan)">x = 3</span>.'
+   ],
+   concl:'HP = {(3, 2)} &mdash; cek: 2(3) + 3(2) = 12 benar, dan 3 \u2212 2 = 1 benar.'},
+  {tag:'SPLDV',cls:'cyan',title:'Metode Substitusi',
+   problem:'Tentukan penyelesaian dari:<div class="math math-block" style="margin:8px 0 0">'+eqLine('(1)','y = 3x \u2212 5')+eqLine('(2)','2x + y = 10')+'</div>',
+   steps:[
+    'Persamaan (1) sudah menyatakan y dalam x. Substitusikan ke (2): <span class="math">2x + (3x \u2212 5) = 10</span>.',
+    'Sederhanakan: <span class="math">5x \u2212 5 = 10</span> &rarr; <span class="math">5x = 15</span>, maka <span class="math" style="color:var(--cyan)">x = 3</span>.',
+    'Kembali ke (1): <span class="math">y = 3(3) \u2212 5 = 9 \u2212 5</span>, maka <span class="math" style="color:var(--gold)">y = 4</span>.'
+   ],
+   concl:'HP = {(3, 4)} &mdash; cek di (2): 2(3) + 4 = 10 benar.'},
+  {tag:'Soal Cerita',cls:'green',title:'Model Matematika SPLDV',
+   problem:'Di koperasi sekolah, harga 3 buku tulis dan 2 pensil adalah Rp13.000,00. Harga 1 buku tulis dan 3 pensil adalah Rp9.000,00. Tentukan harga 1 buku tulis dan 1 pensil.',
+   steps:[
+    'Misal b = harga buku, p = harga pensil. Model: <span class="math">3b + 2p = 13.000</span> (1) dan <span class="math">b + 3p = 9.000</span> (2).',
+    'Eliminasi b: kalikan (2) dengan 3 &rarr; <span class="math">3b + 9p = 27.000</span>, lalu kurangi dengan (1): <span class="math">7p = 14.000</span>, maka <span class="math" style="color:var(--gold)">p = 2.000</span>.',
+    'Substitusi ke (2): <span class="math">b = 9.000 \u2212 3(2.000) = 3.000</span>, maka <span class="math" style="color:var(--cyan)">b = 3.000</span>.'
+   ],
+   concl:'Harga 1 buku tulis dan 1 pensil = 3.000 + 2.000 = Rp5.000,00.'},
+  {tag:'SPLTV',cls:'violet',title:'Metode Campuran (Eliminasi\u2013Substitusi)',
+   problem:'Tentukan penyelesaian SPLTV berikut:<div class="math math-block" style="margin:8px 0 0">'+eqLine('(1)','x + y + z = 6')+eqLine('(2)','2x \u2212 y + z = 3')+eqLine('(3)','x + 2y \u2212 z = 2')+'</div>',
+   steps:[
+    'Hilangkan z. (1) \u2212 (2): <span class="math">\u2212x + 2y = 3</span> &rarr; sebut (4). Lalu (1) + (3): <span class="math">2x + 3y = 8</span> &rarr; sebut (5).',
+    '(4) dan (5) adalah SPLDV. Dari (4): <span class="math">x = 2y \u2212 3</span>. Substitusikan ke (5): <span class="math">2(2y \u2212 3) + 3y = 8</span> &rarr; <span class="math">7y = 14</span>, maka <span class="math" style="color:var(--gold)">y = 2</span>.',
+    'Dari (4): <span class="math">x = 2(2) \u2212 3 = 1</span>, maka <span class="math" style="color:var(--cyan)">x = 1</span>. Substitusikan x dan y ke (1): <span class="math">1 + 2 + z = 6</span>, maka <span class="math" style="color:var(--pink)">z = 3</span>.'
+   ],
+   concl:'HP = {(1, 2, 3)} &mdash; cek (2): 2(1) \u2212 2 + 3 = 3 benar; cek (3): 1 + 2(2) \u2212 3 = 2 benar.'}
+];
+function buildExamples(){
+  const host=$('#exGrid');
+  host.innerHTML=EXAMPLES.map((ex,i)=>`
+    <div class="card ex-card reveal in">
+      <div class="card-h">
+        <span class="tag ${ex.cls}">${ex.tag}</span>
+        <h3 style="margin-left:2px">${ex.title}</h3>
+      </div>
+      <div class="problem">${ex.problem}</div>
+      <div class="ex-steps" id="exSteps${i}">
+        ${ex.steps.map((s,j)=>`<div class="ex-step"><span class="n">${j+1}</span><div>${s}</div></div>`).join('')}
+        <div class="ex-step concl" style="padding:13px 17px"><span class="n">${ic('flag')}</span><div><b>Kesimpulan:</b> ${ex.concl}</div></div>
+      </div>
+      <button class="btn btn-sm btn-ghost" data-ex="${i}">Tampilkan Langkah</button>
+    </div>`).join('');
+  $$('#exGrid [data-ex]').forEach(btn=>btn.addEventListener('click',()=>{
+    const i=+btn.dataset.ex;
+    const steps=$$('#exSteps'+i+' .ex-step');
+    const hidden=steps.filter(s=>!s.classList.contains('show'));
+    if(hidden.length===0){
+      steps.forEach(s=>s.classList.remove('show'));
+      btn.textContent='Tampilkan Langkah';
+      return;
+    }
+    hidden[0].classList.add('show');
+    const left=hidden.length-1;
+    if(left===0)btn.textContent='Sembunyikan Langkah';
+    else btn.textContent='Langkah Berikutnya ('+(steps.length-hidden.length)+'/'+steps.length+')';
+  }));
+  /* gaya angka kesimpulan */
+  $$('#exGrid .concl .n').forEach(n=>{n.style.background='rgba(52,211,153,.15)'});
+}
+
+/* =====================================================
+   KUIS
+===================================================== */
+const QUIZ=[
+ {t:'SPLDV',q:'Himpunan penyelesaian dari <span class="math">x + y = 7</span> dan <span class="math">x \u2212 y = 3</span> adalah &hellip;',
+  o:['(5, 2)','(4, 3)','(6, 1)','(2, 5)'],a:0,
+  e:'Jumlahkan kedua persamaan: <span class="math">2x = 10</span> &rarr; <span class="math">x = 5</span>. Substitusi: <span class="math">5 + y = 7</span> &rarr; <span class="math">y = 2</span>. Jadi HP = {(5, 2)}.'},
+ {t:'SPLDV',q:'Titik potong garis <span class="math">y = 2x \u2212 3</span> dan <span class="math">y = x + 1</span> adalah &hellip;',
+  o:['(4, 5)','(3, 2)','(2, 1)','(5, 4)'],a:0,
+  e:'Samakan kedua ruas: <span class="math">2x \u2212 3 = x + 1</span> &rarr; <span class="math">x = 4</span>. Maka <span class="math">y = 4 + 1 = 5</span>.'},
+ {t:'SPLDV',q:'Penyelesaian sistem <span class="math">3x + 2y = 16</span> dan <span class="math">x + y = 6</span> adalah &hellip;',
+  o:['(4, 2)','(2, 4)','(5, 1)','(3, 3)'],a:0,
+  e:'Dari persamaan kedua: <span class="math">x = 6 \u2212 y</span>. Substitusi: <span class="math">3(6 \u2212 y) + 2y = 16</span> &rarr; <span class="math">18 \u2212 y = 16</span> &rarr; <span class="math">y = 2</span>, sehingga <span class="math">x = 4</span>.'},
+ {t:'Soal Cerita',q:'Harga 2 buku dan 3 pensil Rp14.000,00, sedangkan harga 1 buku dan 2 pensil Rp8.500,00. Harga 1 buku dan 1 pensil adalah &hellip;',
+  o:['Rp5.500,00','Rp6.000,00','Rp4.500,00','Rp6.500,00'],a:0,
+  e:'Model: <span class="math">2b + 3p = 14.000</span>, <span class="math">b + 2p = 8.500</span>. Dari (2): <span class="math">b = 8.500 \u2212 2p</span>. Substitusi: <span class="math">17.000 \u2212 p = 14.000</span> &rarr; <span class="math">p = 3.000</span>, <span class="math">b = 2.500</span>. Jadi b + p = Rp5.500,00.'},
+ {t:'Konsep',q:'Sistem <span class="math">2x + 3y = 12</span> dan <span class="math">4x + 6y = 24</span> memiliki &hellip;',
+  o:['Tak berhingga banyak solusi','Tidak ada solusi','Tepat satu solusi','Solusi (0, 0)'],a:0,
+  e:'Persamaan kedua = 2 &times; persamaan pertama, sehingga kedua garis <b>berhimpit</b>. Semua titik pada garis itu menjadi solusi.'},
+ {t:'Konsep',q:'Sistem <span class="math">x + 2y = 5</span> dan <span class="math">2x + 4y = 8</span> memiliki &hellip;',
+  o:['Tidak ada solusi','Tak berhingga banyak solusi','Tepat satu solusi','Solusi (2, 2)'],a:0,
+  e:'Perbandingan koefisien: 1/2 = 2/4, tetapi 5/8 tidak sama. Kedua garis <b>sejajar</b>, jadi tidak ada titik potong.'},
+ {t:'Soal Cerita',q:'Usia Ayah 28 tahun lebih tua dari usia Bima. Jumlah usia mereka 40 tahun. Usia Bima sekarang adalah &hellip;',
+  o:['6 tahun','8 tahun','12 tahun','34 tahun'],a:0,
+  e:'Model: <span class="math">A \u2212 B = 28</span> dan <span class="math">A + B = 40</span>. Kurangkan: <span class="math">2B = 12</span> &rarr; <span class="math">B = 6</span>.'},
+ {t:'SPLTV',q:'Diketahui <span class="math">x + y + z = 12</span>, <span class="math">x + y = 7</span>, dan <span class="math">y + z = 8</span>. Nilai z adalah &hellip;',
+  o:['5','4','3','7'],a:0,
+  e:'Substitusikan (2) ke (1): <span class="math">7 + z = 12</span> &rarr; <span class="math">z = 5</span>. (Lengkapnya: x = 4, y = 3, z = 5.)'},
+ {t:'SPLTV',q:'Diketahui <span class="math">2x + y + z = 12</span>, <span class="math">x + 2y + z = 13</span>, <span class="math">x + y + 2z = 15</span>. Nilai <span class="math">x + y + z</span> = &hellip;',
+  o:['10','12','9','11'],a:0,
+  e:'Jumlahkan ketiga persamaan: <span class="math">4x + 4y + 4z = 40</span> &rarr; <span class="math">x + y + z = 10</span>. (Hasil lengkap: x = 2, y = 3, z = 5.)'},
+ {t:'Soal Cerita',q:'Jumlah tiga bilangan adalah 35. Bilangan kedua dua kali bilangan pertama, dan bilangan ketiga 5 lebihnya dari bilangan kedua. Bilangan ketiga adalah &hellip;',
+  o:['17','12','18','6'],a:0,
+  e:'Misal bilangan pertama x. Maka <span class="math">x + 2x + (2x + 5) = 35</span> &rarr; <span class="math">5x = 30</span> &rarr; <span class="math">x = 6</span>. Bilangan ketiga = 2(6) + 5 = 17.'}
+];
+let Q={i:0,score:0,ans:[],order:[]};
+function quizHome(){
+  const best=localStorage.getItem('linierlab-quiz-best');
+  $('#quizRoot').innerHTML=`
+    <div class="card" style="text-align:center;padding:44px 28px">
+      <div class="icbox c-pink" style="width:64px;height:64px;margin:0 auto 16px">${ic('list')}</div>
+      <h3 style="font-size:1.4rem;margin-bottom:10px">Kuis SPLDV &amp; SPLTV</h3>
+      <p class="muted" style="max-width:440px;margin:0 auto 8px">10 soal pilihan ganda &bull; tanpa batas waktu &bull; pembahasan muncul setelah setiap jawaban.</p>
+      ${best!==null?`<p style="font-size:.85rem;margin-bottom:6px"><span class="tag gold">Skor terbaikmu: ${best}/100</span></p>`:''}
+      <button class="btn" style="margin-top:18px" id="btnStartQuiz">${ic('play')} Mulai Kuis</button>
+    </div>`;
+  $('#btnStartQuiz').addEventListener('click',startQuiz);
+}
+function startQuiz(){
+  Q={i:0,score:0,ans:[],order:QUIZ.map((q,idx)=>({...q,opts:shuffle(q.o.map((t,j)=>({t,c:j===q.a})))}))};
+  renderQ();
+}
+function renderQ(){
+  const q=Q.order[Q.i],n=Q.order.length;
+  $('#quizRoot').innerHTML=`
+    <div class="q-progress"><span class="lbl">Soal ${Q.i+1} dari ${n}</span><div class="bar"><i style="width:${(Q.i)/n*100}%"></i></div><span class="lbl" style="color:var(--pink)">Skor: ${Q.score}</span></div>
+    <div class="card q-card">
+      <span class="tag pink">${q.t}</span>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts" id="qOpts">
+        ${q.opts.map((o,j)=>`<button class="q-opt" data-oi="${j}"><span class="abc">${'ABCD'[j]}</span><span>${o.t}</span></button>`).join('')}
+      </div>
+      <div class="q-explain" id="qExplain"></div>
+      <div style="margin-top:18px;text-align:right;display:none" id="qNextWrap">
+        <button class="btn btn-sm" id="btnQNext">${Q.i+1===n?'Lihat Hasil':'Soal Berikutnya'} ${ic('arrow')}</button>
+      </div>
+    </div>`;
+  $('#qOpts').addEventListener('click',e=>{
+    const btn=e.target.closest('.q-opt');
+    if(!btn||btn.disabled)return;
+    const j=+btn.dataset.oi,chosen=q.opts[j];
+    $$('#qOpts .q-opt').forEach((b,k)=>{
+      b.disabled=true;
+      if(q.opts[k].c)b.classList.add('correct');
+      else if(k===j)b.classList.add('wrong');
+    });
+    if(chosen.c)Q.score+=10;
+    Q.ans.push({q,ok:chosen.c,chosen:chosen.t});
+    $$('.q-progress .bar i').forEach(b=>b.style.width=((Q.i+1)/Q.order.length*100)+'%');
+    $$('.q-progress .lbl')[1].textContent='Skor: '+Q.score;
+    const ex=$('#qExplain');
+    ex.classList.add('show');
+    ex.innerHTML='<h4>'+ic('idea')+' Pembahasan</h4><div style="font-size:.94rem">'+q.e+'</div>';
+    $('#qNextWrap').style.display='block';
+    $('#btnQNext').addEventListener('click',()=>{
+      Q.i++;
+      if(Q.i<Q.order.length)renderQ();else quizResult();
+    });
+  });
+}
+function quizResult(){
+  const s=Q.score;
+  const best=+(localStorage.getItem('linierlab-quiz-best')||0);
+  if(s>best)localStorage.setItem('linierlab-quiz-best',s);
+  const msg=s>=90?'Luar biasa! Kamu menguasai materi ini sepenuhnya.':
+          s>=70?'Bagus! Sedikit lagi menuju sempurna &mdash; pelajari kembali soal yang keliru.':
+          s>=50?'Cukup baik. Coba ulangi simulasi dan contoh soal, lalu tes lagi.':
+          'Jangan menyerah! Mulai lagi dari materi, ikuti langkah simulasinya, lalu coba lagi.';
+  const C=2*Math.PI*84;
+  $('#quizRoot').innerHTML=`
+    <div class="card" style="text-align:center;padding:40px 26px">
+      <h3 style="font-size:1.35rem;margin-bottom:6px">Hasil Kuismu</h3>
+      <div class="score-ring">
+        <svg width="170" height="170"><circle cx="85" cy="85" r="84" stroke="rgba(148,163,184,.14)" stroke-width="11" fill="none"/>
+        <circle cx="85" cy="85" r="84" stroke="url(#qgrad)" stroke-width="11" fill="none" stroke-linecap="round"
+          stroke-dasharray="${C}" stroke-dashoffset="${C}" id="ringScore"/>
+        <defs><linearGradient id="qgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#8b7cf6"/></linearGradient></defs></svg>
+        <div class="num"><div><b>${s}</b><span>dari 100</span></div></div>
+      </div>
+      <p class="muted" style="max-width:420px;margin:6px auto 20px">${msg}</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="btnRetry">${ic('refresh')} Ulangi Kuis</button>
+        <a class="btn btn-ghost" href="#materi">Kembali ke Materi</a>
+        <a class="btn btn-gold" href="#turnamen">Lanjut ke Turnamen</a>
+      </div>
+      <div style="text-align:left;margin-top:28px">
+        <h4 style="margin-bottom:4px">Tinjauan Jawaban</h4>
+        ${Q.ans.map((r,k)=>`
+          <div class="review-item">
+            <b>Soal ${k+1}.</b> <span class="muted">${r.q.q}</span>
+            <div class="rk" style="color:${r.ok?'var(--green)':'var(--red)'}">${ic(r.ok?'check':'cross')} Jawabanmu: <span class="math">${r.chosen}</span></div>
+            ${r.ok?'':`<div class="rk" style="color:var(--green)">${ic('check')} Kunci: <span class="math">${r.q.o[r.q.a]}</span></div>`}
+          </div>`).join('')}
+      </div>
+    </div>`;
+  requestAnimationFrame(()=>{setTimeout(()=>{const r=$('#ringScore');if(r){r.style.transition='stroke-dashoffset 1.2s cubic-bezier(.2,.8,.3,1)';r.style.strokeDashoffset=C*(1-s/100);}},80)});
+  if(s>=80)confetti();
+  $('#btnRetry').addEventListener('click',startQuiz);
+}
+
+/* =====================================================
+   TURNAMEN
+===================================================== */
+const BOT_NAMES=['Sigma','Delta','Euler','Gauss','Hypatia','Noether','Fibonacci'];
+const BOT_COLORS=['#22d3ee','#f472b6','#8b7cf6','#34d399','#fb7185','#fbbf24','#60a5fa'];
+const RCFG=[
+  {name:'Perempat Final',q:4,time:20,w:{dv:.7,tv:.1,wp:.2},skill:.62},
+  {name:'Semifinal',q:5,time:18,w:{dv:.4,tv:.35,wp:.25},skill:.78},
+  {name:'Final',q:6,time:15,w:{dv:.25,tv:.55,wp:.2},skill:.88}
+];
+const LB_KEY='linierlab-leaderboard';
+let T={phase:'home',name:'Kamu',rounds:null,total:0,session:0};
+
+function lbGet(){try{return JSON.parse(localStorage.getItem(LB_KEY))||[]}catch(e){return[]}}
+function lbAdd(name,pts){
+  const lb=lbGet();lb.push({name,pts,when:Date.now()});
+  lb.sort((a,b)=>b.pts-a.pts);
+  localStorage.setItem(LB_KEY,JSON.stringify(lb.slice(0,20)));
+}
+function lbHTML(){
+  const lb=lbGet();
+  if(!lb.length)return '<p class="muted" style="font-size:.9rem">Belum ada juara tercatat. Jadilah yang pertama!</p>';
+  return '<div class="lb-list">'+lb.slice(0,8).map((e,i)=>
+    '<div class="lb-row"><span class="rank">'+(i+1)+'</span><span class="nm">'+esc(e.name)+'</span><span class="pts">'+e.pts+'</span></div>').join('')+'</div>';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+/* ---- generator soal turnamen ---- */
+function opts4(correct,extras){
+  const set=[String(correct)];
+  const cands=[correct+1,correct-1,correct+2,correct-2,correct+3,correct-3,-(correct),correct+4,...extras];
+  for(const c of cands){if(set.length>=4)break;if(c!==correct&&!set.includes(String(c)))set.push(String(c));}
+  while(set.length<4)set.push(String(correct+set.length+2));
+  return shuffle(set);
+}
+function genDV(){
+  const x=ri(-4,6),y=ri(-4,6);
+  let a1,b1,a2,b2,det=0,tries=0;
+  while(det===0&&tries<60){
+    a1=ri(-4,4)||1;b1=ri(-4,4)||-1;a2=ri(-4,4)||2;b2=ri(-4,4)||-2;
+    det=a1*b2-a2*b1;tries++;
+  }
+  const c1=a1*x+b1*y,c2=a2*x+b2*y;
+  const ask=pick(['x','y','sum']);
+  const ans=ask==='x'?x:ask==='y'?y:x+y;
+  const askTxt=ask==='sum'?'x + y':ask;
+  return {
+    html:'Diketahui <span class="math">'+fmtTerms([{c:F(a1),v:'x'},{c:F(b1),v:'y'}])+' = '+nS(c1)+'</span> dan <span class="math">'+fmtTerms([{c:F(a2),v:'x'},{c:F(b2),v:'y'}])+' = '+nS(c2)+'</span>. Nilai <span class="math">'+askTxt+'</span> adalah &hellip;',
+    opts:opts4(ans,ask==='sum'?[x,y]:[ask==='x'?y:x]),ans:String(ans)
+  };
+}
+function genTV(){
+  const x=ri(-3,5),y=ri(-3,5),z=ri(-3,5);
+  let M,det=0,tries=0;
+  while(det===0&&tries<80){
+    M=[0,1,2].map(()=>[ri(-3,3)||1,ri(-3,3)||-1,ri(-3,3)||2]);
+    det=M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1])-M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0])+M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]);tries++;
+  }
+  const d=M.map(r=>r[0]*x+r[1]*y+r[2]*z);
+  const rows=M.map((r,i)=>'<div class="eq-line" style="justify-content:center">'+ '<span>'+fmtTerms([{c:F(r[0]),v:'x'},{c:F(r[1]),v:'y'},{c:F(r[2]),v:'z'}])+' = '+nS(d[i])+'</span></div>').join('');
+  const ask=pick(['x','y','z','sum']);
+  const val={x,y,z,sum:x+y+z}[ask];
+  const askTxt=ask==='sum'?'x + y + z':ask;
+  return {
+    html:'Perhatikan sistem berikut:<div class="math" style="margin:8px 0;line-height:1.9">'+rows+'</div>Nilai <span class="math">'+askTxt+'</span> adalah &hellip;',
+    opts:opts4(val,[x,y,z]),ans:String(val)
+  };
+}
+function genWP(){
+  if(Math.random()<.5){
+    const B=ri(6,12),D=ri(20,30),S=2*B+D;
+    return {
+      html:'Usia Ayah <b>'+nS(D)+' tahun</b> lebih tua dari Bima. Jumlah usia mereka <b>'+nS(S)+' tahun</b>. Usia Bima sekarang adalah &hellip;',
+      opts:opts4(B,[B+1,B-1,D/2|0]).map(s=>s+' tahun'),ans:String(B)+' tahun'
+    };
+  }
+  const b=ri(2,6)*500,p=ri(1,6)*500;
+  const A1=2*b+3*p,A2=b+2*p;
+  return {
+    html:'Harga <b>2 buku dan 3 pensil</b> '+rp(A1)+', harga <b>1 buku dan 2 pensil</b> '+rp(A2)+'. Harga 1 buku dan 1 pensil adalah &hellip;',
+    opts:opts4(b+p,[b+2*p,2*b+p,Math.abs(b-p)||b+p+500]).map(s=>rp(+s)),ans:rp(b+p)
+  };
+}
+function genQ(roundIdx){
+  const w=RCFG[roundIdx].w,r=Math.random();
+  if(r<w.dv)return genDV();
+  if(r<w.dv+w.tv)return genTV();
+  return genWP();
+}
+
+/* ---- tampilan turnamen ---- */
+function tHome(){
+  T.phase='home';
+  $('#tourneyRoot').innerHTML=`
+    <div class="t-home-hero">
+      <div class="trophy">${ic('crown')}</div>
+      <h3 style="font-size:1.6rem;margin-bottom:8px">Piala Aljabar 2026</h3>
+      <p class="muted" style="max-width:520px;margin:0 auto">Delapan peserta, tiga babak sistem gugur. Jawab soal SPLDV &amp; SPLTV lebih cepat dan lebih tepat dari lawanmu: <b style="color:var(--text)">+100 poin</b> per jawaban benar plus <b style="color:var(--text)">bonus waktu</b>.</p>
+      <div class="t-rules">
+        <div class="t-rule">${ic('users')}<b>8 Peserta</b><span>Bracket sistem gugur</span></div>
+        <div class="t-rule">${ic('flag')}<b>3 Babak</b><span>Perempat final &rarr; final</span></div>
+        <div class="t-rule">${ic('clock')}<b>Waktu Terbatas</b><span>15&ndash;20 detik per soal</span></div>
+        <div class="t-rule">${ic('medal')}<b>Papan Peringkat</b><span>Skor tersimpan di perangkat</span></div>
+      </div>
+      <div class="name-join">
+        <input id="tName" maxlength="16" placeholder="Tulis namamu&hellip;" value="${esc(T.name==='Kamu'?'':T.name)}">
+        <button class="btn btn-gold" id="btnTStart">${ic('trophy')} Masuk Arena</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <div class="card-h"><span class="icbox c-gold">${ic('medal')}</span><h3>Papan Peringkat</h3></div>
+      ${lbHTML()}
+    </div>`;
+  const start=()=>{
+    const nm=$('#tName').value.trim();
+    T.name=nm||'Kamu';
+    buildBracket();
+    renderBracket();
+  };
+  $('#btnTStart').addEventListener('click',start);
+  $('#tName').addEventListener('keydown',e=>{if(e.key==='Enter')start()});
+}
+function buildBracket(){
+  T.session++;
+  T.total=0;
+  const bots=shuffle(BOT_NAMES.map((n,i)=>({name:n,human:false,color:BOT_COLORS[i],skill:0})));
+  const slots=[{name:T.name,human:true,color:'#22d3ee'}].concat(bots.slice(0,7));
+  const shuffled=shuffle(slots);
+  const qf=[];
+  for(let i=0;i<4;i++)qf.push({a:shuffled[2*i],b:shuffled[2*i+1],done:false,winner:null,sa:null,sb:null});
+  T.rounds=[qf,[{a:null,b:null,done:false},{a:null,b:null,done:false}],[{a:null,b:null,done:false}]];
+  /* lawan mendapat skill sesuai babak (naik tiap ronde) */
+  T.rounds[0].forEach(m=>{[m.a,m.b].forEach(p=>{if(!p.human)p.skill=RCFG[0].skill+Math.random()*.06-.03})});
+}
+function initials(n){return n.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function mbRow(p,score,isW,isL){
+  if(!p)return '<div class="mb-row" style="opacity:.35"><span class="init" style="background:#3b4a6b">?</span><span class="mn">Menunggu&hellip;</span></div>';
+  return '<div class="mb-row'+(isW?' winner':'')+(isL?' loser':'')+(p.human?' human':'')+'">'+
+    '<span class="init" style="background:'+p.color+'">'+initials(p.name)+'</span>'+
+    '<span class="mn">'+esc(p.name)+(p.human?' (Kamu)':'')+'</span>'+
+    '<span class="ms">'+(score===null||score===undefined?'':score)+'</span></div>';
+}
+function matchBox(m,roundIdx,idx,current){
+  let cls='match-box'+(current?' current':'');
+  let inner=mbRow(m.a,m.sa,m.done&&m.winner===m.a,m.done&&m.winner===m.b)+mbRow(m.b,m.sb,m.done&&m.winner===m.b,m.done&&m.winner===m.a);
+  if(current)inner+='<div style="padding:10px 13px;border-top:1px solid var(--border)"><button class="btn btn-sm btn-gold" style="width:100%;justify-content:center" data-play="'+roundIdx+','+idx+'">'+ic('play')+' Mainkan</button></div>';
+  return '<div class="'+cls+'">'+inner+'</div>';
+}
+function humanMatch(){
+  for(let r=0;r<3;r++){
+    const round=T.rounds[r];
+    for(let i=0;i<round.length;i++){
+      const m=round[i];
+      if((m.a&&m.a.human||m.b&&m.b.human)&&!m.done)return{r,i,m};
+    }
+  }
+  return null;
+}
+function simBotMatch(m,roundIdx){
+  const base=RCFG[roundIdx].skill;
+  const pA=m.a.skill||base,pB=m.b.skill||base;
+  const pWin=.5+(pA-pB);
+  const aw=Math.random()<pWin;
+  const w=ri(3,5),l=ri(0,2);
+  m.done=true;
+  m.winner=aw?m.a:m.b;
+  m.sa=aw?w:l;m.sb=aw?l:w;
+}
+function advanceWinners(roundIdx){
+  const cur=T.rounds[roundIdx],next=T.rounds[roundIdx+1];
+  if(!next)return;
+  cur.forEach((m,i)=>{
+    const slot=i%2;
+    const nm=next[Math.floor(i/2)];
+    if(slot===0)nm.a=m.winner;else nm.b=m.winner;
+    if(m.winner&&!m.winner.human){/* pastikan skill ronde berikut */}
+  });
+  next.forEach(m=>{[m.a,m.b].forEach(p=>{if(p&&!p.human&&roundIdx+1<3)p.skill=Math.max(p.skill,RCFG[roundIdx+1].skill+Math.random()*.05-.02)})});
+}
+function renderBracket(){
+  T.phase='bracket';
+  const hm=humanMatch();
+  const champ=T.rounds[2][0]&&T.rounds[2][0].done?T.rounds[2][0].winner:null;
+  let cols='';
+  const titles=['Perempat Final','Semifinal','Final'];
+  for(let r=0;r<3;r++){
+    cols+='<div class="br-col"><h5>'+titles[r]+'</h5>';
+    T.rounds[r].forEach((m,i)=>{
+      const current=hm&&hm.r===r&&hm.i===i;
+      cols+=matchBox(m,r,i,current);
+    });
+    cols+='</div>';
+  }
+  cols+='<div class="br-col"><h5>Juara</h5><div class="champ-box">'+(champ?ic('crown')+'<b>'+esc(champ.name)+'</b>':ic('trophy')+'<b class="muted">?</b>')+'</div></div>';
+  $('#tourneyRoot').innerHTML=`
+    <div class="card">
+      <div class="card-h"><span class="icbox c-gold">${ic('trophy')}</span><h3>Bagan Turnamen</h3></div>
+      <div class="bracket">${cols}</div>
+      ${hm?'<p class="muted" style="margin-top:16px;font-size:.88rem;text-align:center">Pertandinganmu berikutnya: <b style="color:var(--gold)">'+titles[hm.r]+'</b> melawan <b style="color:var(--text)">'+esc(hm.m.a.human?hm.m.b.name:hm.m.a.name)+'</b></p>':''}
+    </div>`;
+  $$('#tourneyRoot [data-play]').forEach(b=>b.addEventListener('click',()=>{
+    const [r,i]=b.dataset.play.split(',').map(Number);
+    playMatch(r,i);
+  }));
+}
+
+/* ---- pertandingan ---- */
+function askQuestion(q,limit,bot,sess){
+  return new Promise(resolve=>{
+    const limitMs=limit*1000,t0=performance.now();
+    let resolved=false,botAnswered=false,botRight=false;
+    $('#mQ').innerHTML=q.html;
+    $('#mOpts').innerHTML=q.opts.map((o,j)=>'<button class="q-opt" data-oi="'+j+'"><span class="abc">'+'ABCD'[j]+'</span><span>'+o+'</span></button>').join('');
+    $('#mNote').textContent='';$('#mNote').className='qnote';
+    setBotStatus('thinking');
+    const ringFg=$('#ringFg'),ringT=$('#ringT'),C=195.6;
+    const botDelay=(0.25+Math.random()*0.55)*limitMs;
+    const bt=setTimeout(()=>{
+      if(resolved||sess!==T.session)return;
+      botAnswered=true;botRight=Math.random()<bot.skill;
+      setBotStatus('done');
+    },botDelay);
+    const iv=setInterval(()=>{
+      if(sess!==T.session){clearInterval(iv);clearTimeout(bt);return}
+      const rem=limitMs-(performance.now()-t0);
+      const frac=Math.max(0,rem/limitMs);
+      ringFg.style.strokeDashoffset=C*(1-frac);
+      ringFg.style.stroke=frac<.3?'var(--red)':frac<.55?'var(--gold)':'var(--green)';
+      ringT.textContent=Math.max(0,Math.ceil(rem/1000));
+      if(rem<=0)finish(false,true);
+    },90);
+    function finish(playerCorrect,timeout,chosenBtn){
+      if(resolved)return;resolved=true;
+      clearInterval(iv);clearTimeout(bt);
+      $$('#mOpts .q-opt').forEach((b,k)=>{
+        b.disabled=true;
+        if(q.opts[k]===q.ans)b.classList.add('correct');
+        else if(chosenBtn&&k===+chosenBtn.dataset.oi)b.classList.add('wrong');
+      });
+      const remS=Math.max(0,Math.round((limitMs-(performance.now()-t0))/1000));
+      const pGain=playerCorrect?100+remS*5:0;
+      const bGain=(botAnswered&&botRight)?100+ri(0,60):0;
+      const note=$('#mNote');
+      if(playerCorrect){note.textContent='Benar! +'+pGain+' poin';note.classList.add('ok')}
+      else if(timeout){note.textContent='Waktu habis. Jawaban benar: '+q.ans;note.classList.add('bad')}
+      else{note.textContent='Kurang tepat. Jawaban benar: '+q.ans;note.classList.add('bad')}
+      if(!botAnswered)setBotStatus('late');
+      setTimeout(()=>resolve({pGain,bGain}),850);
+    }
+    $('#mOpts').onclick=e=>{
+      const btn=e.target.closest('.q-opt');
+      if(!btn||btn.disabled||resolved)return;
+      const correct=q.opts[+btn.dataset.oi]===q.ans;
+      finish(correct,false,btn);
+    };
+  });
+}
+function setBotStatus(st){
+  const el=$('#botStatus');if(!el)return;
+  if(st==='thinking')el.innerHTML='<span class="think"><i></i><i></i><i></i></span> berpikir&hellip;';
+  else if(st==='done')el.innerHTML='<span style="color:var(--green);display:inline-flex;align-items:center;gap:5px">'+ic('check')+' sudah menjawab</span>';
+  else el.innerHTML='<span class="muted">kehabisan waktu</span>';
+}
+function updScores(sp,sb){
+  const p=$('#mScoreP'),b=$('#mScoreB');
+  if(p)p.textContent=sp;if(b)b.textContent=sb;
+}
+async function playMatch(roundIdx,matchIdx){
+  const m=T.rounds[roundIdx][matchIdx];
+  const bot=m.a.human?m.b:m.a;
+  const player=m.a.human?m.a:m.b;
+  const cfg=RCFG[roundIdx];
+  const sess=T.session;
+  T.phase='match';
+  $('#tourneyRoot').innerHTML=`
+    <div class="card match-shell">
+      <div class="sb">
+        <div class="pchip">
+          <span class="init" style="background:${player.color}">${initials(player.name)}</span>
+          <div><div class="pn">${esc(player.name)} (Kamu)</div><div class="ps" id="mScoreP">0</div></div>
+        </div>
+        <div class="mid-col">
+          <span class="rd">${cfg.name}</span>
+          <div class="ring"><svg viewBox="0 0 74 74"><circle class="rbg" cx="37" cy="37" r="31.15"/><circle class="rfg" id="ringFg" cx="37" cy="37" r="31.15"/></svg><span class="rt" id="ringT">${cfg.time}</span></div>
+          <span class="qc" id="mQC"></span>
+        </div>
+        <div class="pchip right">
+          <div><div class="pn">${esc(bot.name)}</div><div class="ps" id="mScoreB">0</div></div>
+          <div style="text-align:right"><span class="init" style="background:${bot.color}">${initials(bot.name)}</span><div class="st" id="botStatus" style="margin-top:6px"></div></div>
+        </div>
+      </div>
+      <div style="max-width:680px;margin:0 auto">
+        <div class="q-text" id="mQ" style="text-align:center"></div>
+        <div class="q-opts" id="mOpts"></div>
+        <div class="qnote" id="mNote"></div>
+      </div>
+      <div class="overlay" id="mOverlay"><div class="obox" id="mOverlayBox"></div></div>
+    </div>`;
+  let sp=0,sb=0;
+  let qi=0;
+  while(qi<cfg.q||sp===sb){
+    const sudden=qi>=cfg.q;
+    $('#mQC').textContent=sudden?'SUDDEN DEATH':'Soal '+(qi+1)+' dari '+cfg.q;
+    const q=genQ(roundIdx);
+    const lim=sudden?12:cfg.time;
+    const r=await askQuestion(q,lim,bot,sess);
+    if(sess!==T.session)return;
+    sp+=r.pGain;sb+=r.bGain;updScores(sp,sb);
+    qi++;
+    await wait(500);
+    if(sess!==T.session)return;
+  }
+  m.done=true;m.sa=sp;m.sb=sb;
+  m.winner=sp>sb?player:bot;
+  T.total+=sp;
+  const won=m.winner===player;
+  /* selesaikan pertandingan bot lain di ronde ini */
+  T.rounds[roundIdx].forEach(other=>{if(other!==m&&!other.done&&other.a&&other.b&&!((other.a.human)||(other.b.human)))simBotMatch(other,roundIdx)});
+  advanceWinners(roundIdx);
+  /* hasil */
+  const isFinal=roundIdx===2;
+  const ov=$('#mOverlay'),box=$('#mOverlayBox');
+  let placeBonus=0,placeLabel='';
+  if(won&&isFinal){placeBonus=1000;placeLabel='Juara'}
+  else if(!won&&isFinal){placeBonus=400;placeLabel='Runner-Up'}
+  else if(!won&&roundIdx===1){placeBonus=200;placeLabel='Semifinalis'}
+  else if(!won&&roundIdx===0){placeBonus=100;placeLabel='Perempat Finalis'}
+  else{placeBonus=0;placeLabel=''}
+  box.innerHTML=`
+    <div class="big-ic" style="color:${won?'var(--gold)':'var(--muted)'}">${ic(won?'crown':'medal')}</div>
+    <h3>${won?(isFinal?'KAMU JUARA!':'Kemenangan!'):'Perjalanan Terhenti'}</h3>
+    <div class="big-score"><span>${sp}</span><span class="vs">vs</span><span>${sb}</span></div>
+    <p>${won?(isFinal?'Kamu menaklukkan seluruh master aljabar dan mengangkat Piala Aljabar!':'Kamu lolos ke babak berikutnya. Bersiaplah!'):esc(bot.name)+' kali ini lebih unggul. Bonus penempatan: '+placeBonus+' poin.'}</p>
+    <button class="btn ${won?'btn-gold':'btn-ghost'}" id="btnAfter">${won&&!isFinal?'Lanjut ke Babak Berikutnya':'Lihat Hasil Akhir'}</button>`;
+  ov.classList.add('show');
+  if(won)confetti();
+  $('#btnAfter').addEventListener('click',()=>{
+    if(won&&!isFinal){renderBracket()}
+    else{
+      const pts=T.total+placeBonus;
+      lbAdd(T.name,pts);
+      renderEnd(won&&isFinal,pts,placeLabel,sp,sb);
+    }
+  });
+}
+function renderEnd(isChamp,pts,placeLabel){
+  T.phase= isChamp?'champion':'over';
+  $('#tourneyRoot').innerHTML=`
+    <div class="t-home-hero">
+      <div class="trophy" style="color:${isChamp?'var(--gold)':'var(--muted)'}">${ic(isChamp?'crown':'medal')}</div>
+      <span class="tag ${isChamp?'gold':'cyan'}" style="margin-bottom:10px">${placeLabel}</span>
+      <h3 style="font-size:1.6rem;margin-bottom:8px">${isChamp?'Selamat, '+esc(T.name)+'!':'Terima kasih sudah bertanding, '+esc(T.name)+'!'}</h3>
+      <p class="muted" style="max-width:480px;margin:0 auto 8px">${isChamp?'Kamu adalah Master Sistem Persamaan Linear. Namamu kini terukir di papan peringkat.':'Setiap kekalahan adalah latihan. Pelajari kembali materinya, lalu tantang lagi!'}</p>
+      <p style="font-size:1.1rem;margin-bottom:18px">Poin yang dicatat: <b style="color:var(--gold);font-size:1.5rem">${pts}</b></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-gold" id="btnTAgain">${ic('refresh')} Main Lagi</button>
+        <a class="btn btn-ghost" href="#materi">Belajar Lagi</a>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <div class="card-h"><span class="icbox c-gold">${ic('medal')}</span><h3>Papan Peringkat</h3></div>
+      ${lbHTML()}
+    </div>`;
+  if(isChamp)confetti();
+  $('#btnTAgain').addEventListener('click',buildAndGo);
+}
+function buildAndGo(){buildBracket();renderBracket();}
+
+/* ---- confetti ---- */
+function confetti(){
+  const host=$('#confetti');
+  const colors=['#22d3ee','#8b7cf6','#f472b6','#fbbf24','#34d399','#fb7185'];
+  for(let i=0;i<70;i++){
+    const s=document.createElement('span');
+    s.className='cfp';
+    s.style.left=Math.random()*100+'%';
+    s.style.background=colors[i%colors.length];
+    s.style.animationDuration=(2.4+Math.random()*2)+'s';
+    s.style.animationDelay=(Math.random()*.9)+'s';
+    s.style.transform='rotate('+(Math.random()*360)+'deg)';
+    if(Math.random()<.4){s.style.borderRadius='50%';s.style.height=s.style.width='9px'}
+    host.appendChild(s);
+  }
+  setTimeout(()=>{host.innerHTML=''},6000);
+}
+
+/* =====================================================
+   INISIALISASI
+===================================================== */
+$$('[data-mtab]').forEach(btn=>btn.addEventListener('click',()=>{
+  $$('[data-mtab]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  $('#mtab-dv').classList.toggle('active',btn.dataset.mtab==='dv');
+  $('#mtab-tv').classList.toggle('active',btn.dataset.mtab==='tv');
+}));
+$$('[data-stab]').forEach(btn=>btn.addEventListener('click',()=>{
+  $$('[data-stab]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  $('#stab-grafik').classList.toggle('active',btn.dataset.stab==='grafik');
+  $('#stab-labtv').classList.toggle('active',btn.dataset.stab==='labtv');
+}));
+buildSliders();
+syncSimUI();
+buildTVInputs();
+buildExamples();
+quizHome();
+tHome();
+</script>
+</body>
+</html>
